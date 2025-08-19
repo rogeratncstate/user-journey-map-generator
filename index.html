@@ -1,95 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>User Journey Map</title>
-  <link rel="stylesheet" href="style.css" />
+<html lang="en"><head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>User Journey Map</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="site-header">
-    <div class="title">USER JOURNEY MAP</div>
-  </header>
-
-  <main id="app">
-    <section class="topbar">
-      <div class="selects">
-        <select id="courseSelect" aria-label="Select course"></select>
-        <select id="personaSelect" aria-label="Select persona" disabled></select>
+<main id="app">
+  <section class="topbar">
+    <div class="selects">
+      <select id="courseSelect" aria-label="Select course"></select>
+      <select id="personaSelect" aria-label="Select persona" disabled></select>
+    </div>
+    <div class="actions"><button id="printBtn" type="button">Print / Save as PDF</button></div>
+  </section>
+  <section class="hero">
+    <div class="avatar-wrap"><div class="avatar"></div><div class="persona-name" id="personaName">—</div></div>
+    <div class="scenario card"><div class="card-head">Scenario</div><div class="card-body" id="scenarioContent"></div></div>
+    <div class="expectations card"><div class="card-head">Expectations</div><ul class="card-body bullets" id="expectationsList"></ul></div>
+  </section>
+  <section class="grid">
+    <div class="spacer"></div><div class="tab ph1">Phase 1 | Awareness</div><div class="tab ph2">Phase 2 | Consideration</div><div class="tab ph3">Phase 3 | Enrollment</div><div class="tab ph4">Phase 4 | Engagement</div>
+    <div class="row-label">Actions</div><div class="cell tint ph1" data-phase="0" data-row="actions"></div><div class="cell tint ph2" data-phase="1" data-row="actions"></div><div class="cell tint ph3" data-phase="2" data-row="actions"></div><div class="cell tint ph4" data-phase="3" data-row="actions"></div>
+    <div class="row-label">Pains</div><div class="cell tint ph1" data-phase="0" data-row="pains"></div><div class="cell tint ph2" data-phase="1" data-row="pains"></div><div class="cell tint ph3" data-phase="2" data-row="pains"></div><div class="cell tint ph4" data-phase="3" data-row="pains"></div>
+    <div class="row-label">Feelings</div>
+    <div class="cell feelings-merged" id="feelingsCell">
+      <div class="feelings-track-layer">
+        <svg id="feelingsSVG" viewBox="0 0 1000 220" preserveAspectRatio="none" role="img">
+          <defs><pattern id="dotline" width="6" height="6" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="#cbd5e1"></rect></pattern></defs>
+          <g id="yaxis"></g><g id="guides"></g>
+          <line id="baseline" x1="40" x2="960" y1="150" y2="150" stroke="url(#dotline)" stroke-width="2"></line>
+          <path id="feelingsPath" fill="none" stroke-width="3"></path><g id="markers"></g>
+        </svg>
+        <div class="quotes-layer grid4" id="quotesLayer"><div class="qcol" data-col="0"></div><div class="qcol" data-col="1"></div><div class="qcol" data-col="2"></div><div class="qcol" data-col="3"></div></div>
       </div>
-      <div class="actions">
-        <button id="printBtn" type="button">Print / Save as PDF</button>
-      </div>
-    </section>
-
-    <section class="hero">
-      <div class="avatar-wrap">
-        <div class="avatar"></div>
-        <div class="persona-name" id="personaName">—</div>
-      </div>
-
-      <div class="scenario card">
-        <div class="card-head">Scenario</div>
-        <div class="card-body" id="scenarioContent"></div>
-      </div>
-
-      <div class="expectations card">
-        <div class="card-head">Expectations</div>
-        <ul class="card-body bullets" id="expectationsList"></ul>
-      </div>
-    </section>
-
-    <section class="grid">
-      <div class="spacer"></div>
-      <div class="tab ph1">Phase 1 | Awareness</div>
-      <div class="tab ph2">Phase 2 | Consideration</div>
-      <div class="tab ph3">Phase 3 | Enrollment</div>
-      <div class="tab ph4">Phase 4 | Engagement</div>
-
-      <div class="row-label">Actions</div>
-      <div class="cell tint ph1" data-phase="0" data-row="actions"></div>
-      <div class="cell tint ph2" data-phase="1" data-row="actions"></div>
-      <div class="cell tint ph3" data-phase="2" data-row="actions"></div>
-      <div class="cell tint ph4" data-phase="3" data-row="actions"></div>
-
-      <div class="row-label">Pains</div>
-      <div class="cell tint ph1" data-phase="0" data-row="pains"></div>
-      <div class="cell tint ph2" data-phase="1" data-row="pains"></div>
-      <div class="cell tint ph3" data-phase="2" data-row="pains"></div>
-      <div class="cell tint ph4" data-phase="3" data-row="pains"></div>
-
-      <div class="row-label">Feelings</div>
-      <div class="cell feelings-merged" id="feelingsCell">
-        <div class="feelings-track-layer">
-          <svg id="feelingsSVG" viewBox="0 0 1000 220" preserveAspectRatio="none" role="img" aria-label="Feelings path">
-            <defs>
-              <pattern id="dotline" width="6" height="6" patternUnits="userSpaceOnUse">
-                <rect width="2" height="2" fill="#cbd5e1"></rect>
-              </pattern>
-            </defs>
-            <g id="yaxis"></g>
-            <g id="guides"></g>
-            <line id="baseline" x1="40" x2="960" y1="150" y2="150" stroke="url(#dotline)" stroke-width="2"></line>
-            <path id="feelingsPath" fill="none" stroke-width="3"></path>
-            <g id="markers"></g>
-          </svg>
-          <div class="quotes-layer grid4" id="quotesLayer">
-            <div class="qcol" data-col="0"></div>
-            <div class="qcol" data-col="1"></div>
-            <div class="qcol" data-col="2"></div>
-            <div class="qcol" data-col="3"></div>
-          </div>
-        </div>
-      </div>
-
-      <div class="row-label">Opportunities</div>
-      <div class="cell tint ph1" data-phase="0" data-row="opportunities"></div>
-      <div class="cell tint ph2" data-phase="1" data-row="opportunities"></div>
-      <div class="cell tint ph3" data-phase="2" data-row="opportunities"></div>
-      <div class="cell tint ph4" data-phase="3" data-row="opportunities"></div>
-    </section>
-  </main>
-
-  <script src="script.js"></script>
-</body>
-</html>
+    </div>
+    <div class="row-label">Opportunities</div><div class="cell tint ph1" data-phase="0" data-row="opportunities"></div><div class="cell tint ph2" data-phase="1" data-row="opportunities"></div><div class="cell tint ph3" data-phase="2" data-row="opportunities"></div><div class="cell tint ph4" data-phase="3" data-row="opportunities"></div>
+  </section>
+</main>
+<script src="config.js"></script>
+<script src="script.js" defer></script>
+</body></html>
