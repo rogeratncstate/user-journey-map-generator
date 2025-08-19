@@ -88,3 +88,5 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1
 .chip.ok{border-color:#c7f9cc;background:#eaffea}
 .chip.warn{border-color:#fde68a;background:#fffbeb}
 .chip.err{border-color:#fecaca;background:#fff1f2}
+
+.actions button{margin-left:6px}

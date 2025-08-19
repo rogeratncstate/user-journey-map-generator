@@ -98,7 +98,8 @@ function displayNameFromFilename(fname){
 }
 
 async function init(){
-  const manifest = await loadManifest();
+  window.__JOURNEY_MANIFEST__ = await loadManifest();
+  const manifest = window.__JOURNEY_MANIFEST__;
   const chip = document.getElementById('sourceChip');
   if (manifest.source === 'github') { chip.textContent='Data: GitHub'; chip.className='chip ok'; }
   else if (manifest.source === 'local') { chip.textContent='Data: Local fallback'; chip.className='chip warn'; }
@@ -150,6 +151,36 @@ async function init(){
 
   document.getElementById('printBtn').addEventListener('click', ()=> window.print());
   document.getElementById('reloadBtn').addEventListener('click', ()=>{ location.href = location.pathname + '?debug=' + (getParam('debug')||'0'); });
+  document.getElementById('viewManifestBtn').addEventListener('click', ()=>{
+    const panel = document.getElementById('debugPanel');
+    panel.style.display = (panel.style.display==='none'?'block':'none');
+    if(panel.style.display==='block'){
+      try{
+        const src = (manifest && manifest.source) ? manifest.source : 'unknown';
+        panel.textContent = 'Source: ' + src + '\n' + JSON.stringify(manifest, null, 2);
+      }catch(e){
+        panel.textContent = 'Could not stringify manifest: ' + (e && e.message ? e.message : e);
+      }
+    }
+  });
+  document.getElementById('testPersonaBtn').addEventListener('click', async ()=>{
+    const personaSel = document.getElementById('personaSelect');
+    const courseSel = document.getElementById('courseSelect');
+    const panel = document.getElementById('debugPanel');
+    panel.style.display = 'block';
+    if(!courseSel.value){ panel.textContent='Select a course first.'; return; }
+    if(!personaSel.value){ panel.textContent='Select a user first.'; return; }
+    const url = personaSel.value;
+    try{
+      panel.textContent = 'Fetching: ' + url + ' ...';
+      const resp = await fetch(url, { cache: 'no-store' });
+      const text = await resp.text();
+      const snippet = text.slice(0, 400);
+      panel.textContent = 'Status: ' + resp.status + ' ' + resp.statusText + '\nURL: ' + url + '\n--- SNIPPET ---\n' + snippet;
+    }catch(e){
+      panel.textContent = 'Error fetching ' + url + ': ' + (e && e.message ? e.message : e);
+    }
+  });
 }
 
 function clearGrid(){
