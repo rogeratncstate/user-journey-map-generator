@@ -108,6 +108,7 @@ async function init(){
   setOptions(personaSel, [], '-- Select User --');
   personaSel.disabled = true;
   personaName.textContent = '—';
+  try{updateBadge(document.getElementById('debugBadge')?document.getElementById('debugBadge').textContent:'');}catch{}
 
   courseSel.onchange = async ()=>{
     const folder = courseSel.value;
@@ -117,6 +118,7 @@ async function init(){
     setOptions(personaSel, personas, '-- Select User --');
     personaSel.disabled = personas.length === 0;
     personaName.textContent = '—';
+  try{updateBadge(document.getElementById('debugBadge')?document.getElementById('debugBadge').textContent:'');}catch{}
     clearGrid();
   };
 
