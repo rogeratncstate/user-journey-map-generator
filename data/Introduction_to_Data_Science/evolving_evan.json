@@ -1,0 +1,88 @@
+{
+  "persona": "Evolving Evan",
+  "scenario": "Career changer balancing work/family while entering data-focused roles.",
+  "expectations": [
+    "Beginner-friendly structure",
+    "Credibility & support",
+    "Tangible outcomes"
+  ],
+  "phases": [
+    {
+      "title": "Phase 1 | Awareness",
+      "actions": [
+        "Sees ad/email",
+        "Clicks to learn more",
+        "Reads success stories"
+      ],
+      "pains": [
+        "Intimidated by tech terms",
+        "Worries they\u2019re too late"
+      ],
+      "feelings": {
+        "quote": "This seems right\u2026 but am I too far behind?",
+        "score": 3
+      },
+      "opportunities": [
+        "Use plain language",
+        "Show career-change stories"
+      ]
+    },
+    {
+      "title": "Phase 2 | Consideration",
+      "actions": [
+        "Compares bootcamps",
+        "Reviews curriculum"
+      ],
+      "pains": [
+        "Finding right pacing",
+        "Time balance worries"
+      ],
+      "feelings": {
+        "quote": "Could be great\u2014but can I juggle it?",
+        "score": 6
+      },
+      "opportunities": [
+        "Offer part-time path",
+        "Provide sample weekly schedule"
+      ]
+    },
+    {
+      "title": "Phase 3 | Enrollment",
+      "actions": [
+        "Attends info session",
+        "Chats with support"
+      ],
+      "pains": [
+        "Unsure about outcomes",
+        "Fear of wasting time/money"
+      ],
+      "feelings": {
+        "quote": "If setup is hard, will the rest be worse?",
+        "score": 4
+      },
+      "opportunities": [
+        "Setup webinar",
+        "Show job outcomes"
+      ]
+    },
+    {
+      "title": "Phase 4 | Engagement",
+      "actions": [
+        "Begins learning",
+        "Sets schedule"
+      ],
+      "pains": [
+        "Overwhelmed by errors",
+        "Family conflicts"
+      ],
+      "feelings": {
+        "quote": "I get it\u2026 just need more reps.",
+        "score": 7
+      },
+      "opportunities": [
+        "Office hours",
+        "Track small wins"
+      ]
+    }
+  ]
+}
