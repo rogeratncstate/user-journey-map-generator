@@ -1,0 +1,83 @@
+{
+  "persona": "Determined Diana",
+  "scenario": "Non-technical analyst ready to formalize her skills with R/Python.",
+  "expectations": [
+    "Hands-on labs",
+    "Career relevance",
+    "Instructor support"
+  ],
+  "phases": [
+    {
+      "title": "Phase 1 | Awareness",
+      "actions": [
+        "Finds via colleague",
+        "Reads syllabus"
+      ],
+      "pains": [
+        "Unsure on prerequisites"
+      ],
+      "feelings": {
+        "quote": "Will the class assume too much math?",
+        "score": 5
+      },
+      "opportunities": [
+        "Prereq checklist",
+        "Prep videos"
+      ]
+    },
+    {
+      "title": "Phase 2 | Consideration",
+      "actions": [
+        "Compares outcomes",
+        "Checks time commitment"
+      ],
+      "pains": [
+        "Nights are busy"
+      ],
+      "feelings": {
+        "quote": "If the schedule fits, I\u2019m in.",
+        "score": 7
+      },
+      "opportunities": [
+        "Offer flexible pacing",
+        "Async support"
+      ]
+    },
+    {
+      "title": "Phase 3 | Enrollment",
+      "actions": [
+        "Registers",
+        "Installs tools"
+      ],
+      "pains": [
+        "Laptop setup issues"
+      ],
+      "feelings": {
+        "quote": "Install took forever\u2014hope this pays off.",
+        "score": 4
+      },
+      "opportunities": [
+        "Setup clinic",
+        "Clear specs"
+      ]
+    },
+    {
+      "title": "Phase 4 | Engagement",
+      "actions": [
+        "Attends classes",
+        "Works labs"
+      ],
+      "pains": [
+        "Debug fatigue"
+      ],
+      "feelings": {
+        "quote": "Finally shipping projects!",
+        "score": 8
+      },
+      "opportunities": [
+        "Peer mentoring",
+        "Project gallery"
+      ]
+    }
+  ]
+}
