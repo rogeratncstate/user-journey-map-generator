@@ -1,15 +1,8 @@
 
 // Utils
 function getParam(name){ try{ return new URLSearchParams(location.search).get(name); }catch{ return null; } }
-function addBadge(text){
-  if(getParam('debug')!=='1') return;
-  const badge = document.createElement('div');
-  badge.id='debugBadge';
-  badge.style.cssText='position:fixed;right:12px;top:12px;font:12px system-ui;background:#eef;border:1px solid #99f;border-radius:8px;padding:6px 10px;opacity:.9;z-index:9999;white-space:nowrap;';
-  badge.textContent = text;
-  document.body.appendChild(badge);
-}
-function updateBadge(text){ const b=document.getElementById('debugBadge'); if(b) b.textContent=text; }
+function addBadge(){/* no-op: debug removed */}
+function updateBadge(){/* no-op */}
 function showBanner(msg){
   let bar = document.getElementById('errorBar');
   if(!bar){
@@ -48,7 +41,6 @@ async function loadManifest(){
         if (jsons.length) courses.push({ name: toTitle(folder), folder, files: jsons });
       }
       if (courses.length){
-        addBadge('📂 Data: GitHub · courses=' + courses.length + ' · personas=' + courses.reduce((n,c)=>n+c.files.length,0));
         return { source: 'github', courses };
       } else {
         showBanner('No courses found in GitHub /data. Falling back to local data.');
@@ -62,7 +54,6 @@ async function loadManifest(){
     const res = await fetch('data/manifest.json', { cache: 'no-store' });
     if (res.ok) {
       const m = await res.json();
-      addBadge('📂 Data: Local fallback · courses=' + (m.courses?m.courses.length:0));
       return { source: 'local', ...m };
     }
   } catch(e) {
@@ -100,9 +91,6 @@ async function init(){
   const courseSel = document.getElementById('courseSelect');
   const personaSel = document.getElementById('personaSelect');
   const personaName = document.getElementById('personaName');
-  const chip = document.getElementById('sourceChip');
-  chip.textContent = (manifest.source==='github') ? 'Data: GitHub' : (manifest.source==='local' ? 'Data: Local fallback' : 'Data: Embedded');
-  chip.className = 'chip ' + (manifest.source==='github'?'ok':'warn');
 
   const courseItems = (manifest.courses||[]).map(c=>({value:c.folder, label:c.name}));
   setOptions(courseSel, courseItems, '-- Select Course --');
@@ -141,9 +129,6 @@ async function init(){
   };
 
   document.getElementById('printBtn').addEventListener('click', ()=> window.print());
-  document.getElementById('reloadBtn').addEventListener('click', ()=>{ location.href = location.pathname + '?debug=' + (getParam('debug')||'0'); });
-  document.getElementById('viewManifestBtn').addEventListener('click', ()=>{
-    const panel = document.getElementById('debugPanel');
     panel.style.display = (panel.style.display==='none'?'block':'none');
     if(panel.style.display==='block'){
       try{
@@ -153,8 +138,6 @@ async function init(){
       }
     }
   });
-  document.getElementById('testPersonaBtn').addEventListener('click', async ()=>{
-    const panel = document.getElementById('debugPanel');
     panel.style.display = 'block';
     const url = personaSel.value;
     if(!url){ panel.textContent='Select a user first.'; return; }
@@ -179,7 +162,6 @@ function clearGrid(){
 }
 
 // ----- Rendering -----
-
 function render(data){
   document.getElementById('scenarioContent').textContent = (typeof data.scenario === 'string') ? data.scenario : (data?.scenario?.description || '');
   const expList = document.getElementById('expectationsList');
@@ -199,27 +181,16 @@ function render(data){
     phases = order.map(k => data.phases[k]).filter(Boolean);
   }
 
-  // Global continuous numbering for actions
-  let actionCounter = 1;
-
   (phases || []).forEach((p,idx)=>{
-    rows.forEach((row)=>{
+    rows.forEach(row=>{
       const cell=document.querySelector(`.cell[data-phase="${idx}"][data-row="${row}"]`);
       if(!cell) return;
       const list=p[row]||[];
       const items = Array.isArray(list) ? list : (list ? [list] : []);
       if(items.length){
-        if(row === 'actions'){
-          const ol=document.createElement('ol');
-          ol.start = actionCounter;
-          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ol.appendChild(li); });
-          cell.appendChild(ol);
-          actionCounter += items.length;
-        } else {
-          const ul=document.createElement('ul'); ul.className='bullets';
-          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); });
-          cell.appendChild(ul);
-        }
+        const ul=document.createElement('ul'); ul.className='bullets';
+        items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); });
+        cell.appendChild(ul);
       }else{ cell.textContent='—'; }
     });
   });
@@ -231,6 +202,8 @@ function render(data){
   const quotes=(phases||[]).map(p=>p?.feelings?.quote || '').slice(0,4);
   drawFeelings(scores, quotes);
 }
+
+// smoothing
 function catmullRom2bezier(points){
   if(points.length<2) return '';
   const p = points.map(pt=>({x:pt.x, y:pt.y}));

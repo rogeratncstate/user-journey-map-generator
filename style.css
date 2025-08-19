@@ -21,11 +21,6 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1
 .topbar select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;min-width:220px}
 .topbar button{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
 
-.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;padding:6px 8px;border-radius:999px;font-size:12px;margin-right:10px}
-.chip.ok{border-color:#c7f9cc;background:#eaffea}
-.chip.warn{border-color:#fde68a;background:#fffbeb}
-.chip.err{border-color:#fecaca;background:#fff1f2}
-
 .hero{display:grid;grid-template-columns:200px 1fr 1fr;gap:16px;margin-bottom:16px}
 .avatar-wrap{display:flex;flex-direction:column;gap:10px;align-items:center}
 .avatar{width:120px;height:120px;border-radius:999px;background:#e2e8f0}
@@ -86,14 +81,4 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1
   .feelings-merged,
   .feelings-track-layer,
   #feelingsSVG { break-inside: avoid; page-break-inside: avoid; }
-}
-
-ol {
-  padding-inline-start: 20px;
-  margin-block-start: .5rem;
-  margin-block-end: .5rem;
-}
-
-ol li {
-  margin: .25rem 0;
 }
