@@ -1,0 +1,100 @@
+{
+  "persona": "Practical Patti",
+  "scenario": "Patti tracks throughput and staffing in spreadsheets and wants Python/R to clean data, visualize bottlenecks, and present findings to leadership while managing shifts and family commitments.",
+  "expectations": [
+    "Beginner-friendly pacing with explicit prerequisites",
+    "Accessibility for long work shifts and family commitments",
+    "Templates and checklists to apply immediately at work",
+    "Supportive community and responsive instructors"
+  ],
+  "phases": [
+    {
+      "title": "Awareness",
+      "actions": [
+        "Gets recommendation from a colleague who took a coding course",
+        "Reads an article on using R for healthcare quality improvement",
+        "Visits NC State page and downloads the syllabus PDF"
+      ],
+      "pains": [
+        "Intimidated by coding syntax and error messages",
+        "Worried about math requirements and prior stat knowledge",
+        "Unsure if laptop meets software requirements"
+      ],
+      "feelings": {
+        "quote": "Can someone like me actually learn to code without a CS background?",
+        "feeling_score": 4
+      },
+      "opportunities": [
+        "Highlight 'no prior coding required' with a clear learning path",
+        "Provide minimum hardware specs and a compatibility check",
+        "Show a 3-minute video demystifying code cells and scripts"
+      ]
+    },
+    {
+      "title": "Consideration",
+      "actions": [
+        "Compares NC State with a MOOC and a local bootcamp",
+        "Emails program staff about workload and instructor support",
+        "Reviews sample datasets relevant to healthcare ops"
+      ],
+      "pains": [
+        "Concern about hidden costs (software, textbooks)",
+        "Needs clarity on recorded sessions and make-up options",
+        "Wants assurance of practical relevance to healthcare"
+      ],
+      "feelings": {
+        "quote": "If it's flexible and clearly applicable to my unit, I'm in.",
+        "feeling_score": 6
+      },
+      "opportunities": [
+        "List all costs up front and emphasize open-source tooling",
+        "Publish a make-up/recordings policy and turnaround times",
+        "Include a healthcare mini-project example (wait-time analysis)"
+      ]
+    },
+    {
+      "title": "Enrollment",
+      "actions": [
+        "Uses employer reimbursement form and enrolls",
+        "Completes orientation module and community intro",
+        "Runs a guided install for RStudio and Jupyter"
+      ],
+      "pains": [
+        "Nervous about posting first message in the forum",
+        "Install hiccups due to hospital IT restrictions",
+        "Scheduling uncertainty due to shift changes"
+      ],
+      "feelings": {
+        "quote": "I hope I can keep up even when my shifts change.",
+        "feeling_score": 5
+      },
+      "opportunities": [
+        "Offer low-friction intros (prompted template for first post)",
+        "Provide portable, IT-friendly options (Docker or cloud notebooks)",
+        "Flexible deadlines with grace periods"
+      ]
+    },
+    {
+      "title": "Engagement",
+      "actions": [
+        "Completes weekly exercises (tidyverse/Pandas, joins, summaries)",
+        "Builds a dashboard for unit throughput and staffing",
+        "Schedules office hours for feedback on visualization choices"
+      ],
+      "pains": [
+        "Interpreting regression outputs and confidence intervals",
+        "Selecting appropriate charts for stakeholders",
+        "Balancing learning with fatigue after long shifts"
+      ],
+      "feelings": {
+        "quote": "This is starting to click—and my dashboard might actually help my team.",
+        "feeling_score": 8
+      },
+      "opportunities": [
+        "Provide cheat-sheets for statistical interpretation",
+        "Gallery of healthcare-ready visualization patterns",
+        "Offer optional pacing tracks (standard/extended)"
+      ]
+    }
+  ]
+}

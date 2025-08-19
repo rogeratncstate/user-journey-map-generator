@@ -1,0 +1,100 @@
+{
+  "persona": "Data-Savvy Sam",
+  "scenario": "Sam uses spreadsheets and BI tools but needs Python and R to automate reporting and run experiments while balancing a full-time job and evening study.",
+  "expectations": [
+    "Hands-on projects using real datasets",
+    "Clear progression from fundamentals to applied analytics",
+    "Evening/flexible pacing with recorded sessions",
+    "Practical guidance on tooling and environments (Anaconda, RStudio, Jupyter)"
+  ],
+  "phases": [
+    {
+      "title": "Awareness",
+      "actions": [
+        "Searches 'learn Python for marketing analytics' and 'R A/B testing course'",
+        "Reads NC State course page and skim-screens sample syllabus",
+        "Checks LinkedIn job postings for Python/R requirements"
+      ],
+      "pains": [
+        "Overwhelmed by the number of options and mixed prerequisites",
+        "Unsure whether Python or R is better for marketing use cases",
+        "Concerned about time commitment alongside work"
+      ],
+      "feelings": {
+        "quote": "I need the right path—no fluff, just what gets me productive fast.",
+        "feeling_score": 6
+      },
+      "opportunities": [
+        "Provide a comparison table: Python vs R for common analytics tasks",
+        "Show a week-by-week outline with estimated time per week",
+        "Include graduate outcomes and sample project demos"
+      ]
+    },
+    {
+      "title": "Consideration",
+      "actions": [
+        "Attends a live info session and asks about workload",
+        "Reads learner testimonials focused on career impact",
+        "Confirms employer tuition reimbursement policy"
+      ],
+      "pains": [
+        "Worries about tooling setup (packages, environments)",
+        "Unsure if prior statistics knowledge is sufficient",
+        "Anxious about juggling deadlines with campaigns at work"
+      ],
+      "feelings": {
+        "quote": "If setup and stats refresh are covered, I can commit.",
+        "feeling_score": 7
+      },
+      "opportunities": [
+        "Offer a pre-course setup clinic and stats refresher module",
+        "Publish a sample assignment with rubric and time estimate",
+        "Highlight support options (office hours, Slack/Discord, tutoring)"
+      ]
+    },
+    {
+      "title": "Enrollment",
+      "actions": [
+        "Registers online and selects a payment plan",
+        "Completes placement/self-assessment quiz",
+        "Downloads onboarding guide and installs Anaconda and RStudio"
+      ],
+      "pains": [
+        "Confusion about which IDE to start with for the first module",
+        "Anxious about package installation and version conflicts",
+        "Time pressure to finish onboarding before kickoff"
+      ],
+      "feelings": {
+        "quote": "Please let this install work the first time.",
+        "feeling_score": 5
+      },
+      "opportunities": [
+        "Provide step-by-step OS-specific installers and a verified environment file",
+        "Create a 20-minute 'First Notebook/Script' walkthrough",
+        "Offer a 1:1 tech check slot prior to week one"
+      ]
+    },
+    {
+      "title": "Engagement",
+      "actions": [
+        "Completes weekly labs (Pandas/dplyr, visualization, regression)",
+        "Builds a capstone: automated campaign performance report",
+        "Posts questions and code snippets in discussion channels"
+      ],
+      "pains": [
+        "Debugging data wrangling errors under time pressure",
+        "Decision fatigue choosing plotting libraries",
+        "Connecting course concepts to marketing KPIs"
+      ],
+      "feelings": {
+        "quote": "I can see this saving hours at work if I nail it.",
+        "feeling_score": 8
+      },
+      "opportunities": [
+        "Provide starter notebooks and example plots with copy/paste patterns",
+        "Map each module to real marketing metrics and use cases",
+        "Structured peer code reviews with checklists"
+      ]
+    }
+  ]
+}
