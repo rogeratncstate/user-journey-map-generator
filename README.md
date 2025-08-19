@@ -1,1 +1,0 @@
-Set your repo in config.js (already set to rogeratncstate/user-journey-map-generator). Deploy as static to Vercel.
