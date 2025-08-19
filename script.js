@@ -1,4 +1,40 @@
 
+async function loadManifest(){
+  const cfg = window.RUNTIME_MANIFEST_SOURCE;
+  if (cfg && cfg.type === 'github') {
+    try {
+      const base = `https://api.github.com/repos/${cfg.owner}/${cfg.repo}/contents/${cfg.basePath}?ref=${cfg.branch}`;
+      const headers = { 'Accept': 'application/vnd.github+json' };
+      const dirsRes = await fetch(base, { headers, cache: 'no-store' });
+      if (!dirsRes.ok) throw new Error('GitHub API ' + dirsRes.status);
+      const dirs = await dirsRes.json();
+      const courses = [];
+      const toTitle = s => s.replace(/_/g, ' ').replace(/\w\S*/g, w => w[0].toUpperCase() + w.slice(1));
+      for (const entry of dirs) {
+        if (entry.type !== 'dir') continue;
+        const folder = entry.name;
+        const filesRes = await fetch(`${base}/${folder}`, { headers, cache: 'no-store' });
+        if (!filesRes.ok) continue;
+        const files = await filesRes.json();
+        const jsons = files
+          .filter(f => f.type === 'file' && f.name.toLowerCase().endsWith('.json') && f.name !== 'manifest.json')
+          .map(f => ({ name: f.name, url: f.download_url }))
+          .sort((a,b)=> a.name.localeCompare(b.name));
+        if (!jsons.length) continue;
+        courses.push({ name: toTitle(folder), folder, files: jsons });
+      }
+      if (courses.length) {
+        return { source: 'github', courses };
+      }
+    } catch (e) {
+      console.warn('GitHub manifest fetch failed; falling back to local manifest.json', e);
+    }
+  }
+  return fetch('data/manifest.json', { cache: 'no-store' }).then(r => r.json());
+}
+
+
+
 // ------- Runtime manifest with robust fallback -------
 async function loadManifest(){
   const cfg = window.RUNTIME_MANIFEST_SOURCE;
