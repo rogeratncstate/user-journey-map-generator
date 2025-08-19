@@ -179,6 +179,7 @@ function clearGrid(){
 }
 
 // ----- Rendering -----
+
 function render(data){
   document.getElementById('scenarioContent').textContent = (typeof data.scenario === 'string') ? data.scenario : (data?.scenario?.description || '');
   const expList = document.getElementById('expectationsList');
@@ -198,16 +199,27 @@ function render(data){
     phases = order.map(k => data.phases[k]).filter(Boolean);
   }
 
+  // Global continuous numbering for actions
+  let actionCounter = 1;
+
   (phases || []).forEach((p,idx)=>{
-    rows.forEach(row=>{
+    rows.forEach((row)=>{
       const cell=document.querySelector(`.cell[data-phase="${idx}"][data-row="${row}"]`);
       if(!cell) return;
       const list=p[row]||[];
       const items = Array.isArray(list) ? list : (list ? [list] : []);
       if(items.length){
-        const ul=document.createElement('ul'); ul.className='bullets';
-        items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); });
-        cell.appendChild(ul);
+        if(row === 'actions'){
+          const ol=document.createElement('ol');
+          ol.start = actionCounter;
+          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ol.appendChild(li); });
+          cell.appendChild(ol);
+          actionCounter += items.length;
+        } else {
+          const ul=document.createElement('ul'); ul.className='bullets';
+          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); });
+          cell.appendChild(ul);
+        }
       }else{ cell.textContent='—'; }
     });
   });
@@ -219,8 +231,6 @@ function render(data){
   const quotes=(phases||[]).map(p=>p?.feelings?.quote || '').slice(0,4);
   drawFeelings(scores, quotes);
 }
-
-// smoothing
 function catmullRom2bezier(points){
   if(points.length<2) return '';
   const p = points.map(pt=>({x:pt.x, y:pt.y}));
