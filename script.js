@@ -99,6 +99,10 @@ function displayNameFromFilename(fname){
 
 async function init(){
   const manifest = await loadManifest();
+  const chip = document.getElementById('sourceChip');
+  if (manifest.source === 'github') { chip.textContent='Data: GitHub'; chip.className='chip ok'; }
+  else if (manifest.source === 'local') { chip.textContent='Data: Local fallback'; chip.className='chip warn'; }
+  else { chip.textContent='Data: Embedded sample'; chip.className='chip warn'; }
   const courseSel = document.getElementById('courseSelect');
   const personaSel = document.getElementById('personaSelect');
   const personaName = document.getElementById('personaName');
@@ -125,7 +129,18 @@ async function init(){
   personaSel.onchange = async ()=>{
     if(!personaSel.value) return;
     try{
-      const data = await fetch(personaSel.value, { cache: 'no-store' }).then(r=>r.json());
+      let resp; try{
+      console.log('[Persona fetch]', personaSel.value);
+      resp = await fetch(personaSel.value, { cache: 'no-store' });
+      if(!resp.ok){ showBanner('Failed to fetch persona: ' + resp.status + ' ' + resp.statusText + '\n' + personaSel.value); return; }
+      const data = await resp.json();
+      personaName.textContent = displayNameFromFilename(personaSel.value.split('/').pop());
+      render(data);
+    }catch(e){
+      showBanner('Persona fetch error: ' + (e && e.message ? e.message : e) + '\n' + personaSel.value);
+      console.error('Persona fetch error', e);
+      return;
+    }
       personaName.textContent = displayNameFromFilename(personaSel.value.split('/').pop());
       render(data);
     }catch(e){
@@ -134,6 +149,7 @@ async function init(){
   };
 
   document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+  document.getElementById('reloadBtn').addEventListener('click', ()=>{ location.href = location.pathname + '?debug=' + (getParam('debug')||'0'); });
 }
 
 function clearGrid(){

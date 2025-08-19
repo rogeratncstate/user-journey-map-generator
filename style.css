@@ -82,3 +82,9 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1
   .feelings-track-layer,
   #feelingsSVG { break-inside: avoid; page-break-inside: avoid; }
 }
+
+
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:#fff;padding:6px 8px;border-radius:999px;font-size:12px;margin-right:10px}
+.chip.ok{border-color:#c7f9cc;background:#eaffea}
+.chip.warn{border-color:#fde68a;background:#fffbeb}
+.chip.err{border-color:#fecaca;background:#fff1f2}
