@@ -1,6 +1,5 @@
 {
-  "persona_name": "Pivoting Paul",
-  "course": "Introduction to Data Science with Beginning R and Python",
+  "persona": "Pivoting Paul",
   "scenario": {
     "title": "Operations Manager (Logistics)",
     "description": "Paul is an operations manager in logistics with two decades of experience. As automation and AI reshape his field, he wants to reskill into business intelligence or analytics. He is a true beginner at coding and worries about keeping up with younger peers."
