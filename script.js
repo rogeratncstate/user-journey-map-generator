@@ -1,4 +1,26 @@
-// script.js (patched loadManifest and persona loading parts)
+
+// Utils
+function getParam(name){ try{ return new URLSearchParams(location.search).get(name); }catch{ return null; } }
+function addBadge(text){
+  if(getParam('debug')!=='1') return;
+  const badge = document.createElement('div');
+  badge.id='debugBadge';
+  badge.style.cssText='position:fixed;right:12px;top:12px;font:12px system-ui;background:#eef;border:1px solid #99f;border-radius:8px;padding:6px 10px;opacity:.9;z-index:9999;white-space:nowrap;';
+  badge.textContent = text;
+  document.body.appendChild(badge);
+}
+function updateBadge(text){ const b=document.getElementById('debugBadge'); if(b) b.textContent=text; }
+function showBanner(msg){
+  let bar = document.getElementById('errorBar');
+  if(!bar){
+    bar = document.createElement('div');
+    bar.id = 'errorBar';
+    bar.style.cssText = 'margin:8px 0 0 0;padding:10px 12px;border-radius:10px;border:1px solid #fecaca;background:#fff1f2;color:#7f1d1d;font:14px/1.4 system-ui;';
+    const app = document.getElementById('app');
+    app.parentNode.insertBefore(bar, app);
+  }
+  bar.textContent = msg;
+}
 
 async function loadManifest(){
   const cfg = window.RUNTIME_MANIFEST_SOURCE;
@@ -22,23 +44,31 @@ async function loadManifest(){
         const jsons = files
           .filter(f => f.type === 'file' && f.name.toLowerCase().endsWith('.json') && f.name !== 'manifest.json')
           .map(f => ({ name: f.name, url: f.download_url }))
-          .sort((a,b) => a.name.localeCompare(b.name));
+          .sort((a,b)=> a.name.localeCompare(b.name));
         if (jsons.length) courses.push({ name: toTitle(folder), folder, files: jsons });
       }
-      if (courses.length) return { source: 'github', courses };
+      if (courses.length){
+        addBadge('📂 Data: GitHub · courses=' + courses.length + ' · personas=' + courses.reduce((n,c)=>n+c.files.length,0));
+        return { source: 'github', courses };
+      } else {
+        showBanner('No courses found in GitHub /data. Falling back to local data.');
+      }
     } catch (e) {
       console.warn('GitHub manifest fetch failed; using local fallback', e);
     }
   }
+  // Local fallback (tagged)
   try {
     const res = await fetch('data/manifest.json', { cache: 'no-store' });
     if (res.ok) {
       const m = await res.json();
+      addBadge('📂 Data: Local fallback · courses=' + (m.courses?m.courses.length:0));
       return { source: 'local', ...m };
     }
   } catch(e) {
-    console.warn('Local manifest missing', e);
+    console.warn('Local manifest missing; using embedded sample', e);
   }
+  // Embedded sample
   return {
     source: 'embedded',
     courses: [{
@@ -49,31 +79,262 @@ async function loadManifest(){
   };
 }
 
-// When populating personas, use .url if available
-function populatePersonas(course, manifest){
-  const personaSel = document.getElementById('personaSelect');
-  if(!course){ personaSel.innerHTML=''; personaSel.disabled=true; return; }
-  const fromGithub = manifest.source === 'github';
-  const options = course.files.map(f => {
-    const fname = typeof f === 'string' ? f : f.name;
-    const value = (fromGithub && typeof f === 'object' && f.url) ? f.url : `data/${course.folder}/${fname}`;
-    return { value, label: displayNameFromFilename(fname) };
+function setOptions(sel, items, placeholder){
+  sel.innerHTML = '';
+  const ph = document.createElement('option');
+  ph.value = ''; ph.textContent = placeholder; ph.disabled = true; ph.selected = true;
+  sel.appendChild(ph);
+  items.forEach(({value,label})=>{
+    const opt = document.createElement('option');
+    opt.value = value; opt.textContent = label;
+    sel.appendChild(opt);
   });
-  setOptions(personaSel, options, '-- Select User --');
-  personaSel.disabled = false;
+}
+function displayNameFromFilename(fname){
+  const name = fname.replace(/\.json$/i,'').replace(/_/g,' ');
+  return name.replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1));
 }
 
-// Example handler for personaSelect change
-document.getElementById('personaSelect').addEventListener('change', async (e)=>{
-  const url = e.target.value;
-  if(!url) return;
-  try {
-    const resp = await fetch(url, { cache: 'no-store' });
-    if(!resp.ok) { alert('Fetch error: '+resp.status); return; }
-    const data = await resp.json();
-    document.getElementById('personaName').textContent = displayNameFromFilename(url.split('/').pop());
-    render(data);
-  } catch(err) {
-    alert('Persona fetch error: '+err);
+async function init(){
+  const manifest = await loadManifest();
+  const courseSel = document.getElementById('courseSelect');
+  const personaSel = document.getElementById('personaSelect');
+  const personaName = document.getElementById('personaName');
+  const chip = document.getElementById('sourceChip');
+  chip.textContent = (manifest.source==='github') ? 'Data: GitHub' : (manifest.source==='local' ? 'Data: Local fallback' : 'Data: Embedded');
+  chip.className = 'chip ' + (manifest.source==='github'?'ok':'warn');
+
+  const courseItems = (manifest.courses||[]).map(c=>({value:c.folder, label:c.name}));
+  setOptions(courseSel, courseItems, '-- Select Course --');
+  setOptions(personaSel, [], '-- Select User --');
+  personaSel.disabled = true;
+  personaName.textContent = '—';
+
+  courseSel.onchange = async ()=>{
+    const folder = courseSel.value;
+    const course = (manifest.courses||[]).find(c=>c.folder===folder);
+    const files = (course && course.files) ? course.files : [];
+    const fromGithub = manifest.source === 'github';
+    const personas = files.map(f => {
+      const fname = typeof f === 'string' ? f : f.name;
+      const value = (fromGithub && typeof f === 'object' && f.url) ? f.url : `data/${folder}/${fname}`;
+      return { value, label: displayNameFromFilename(fname) };
+    });
+    setOptions(personaSel, personas, '-- Select User --');
+    personaSel.disabled = personas.length === 0;
+    personaName.textContent = '—';
+    clearGrid();
+  };
+
+  personaSel.onchange = async ()=>{
+    if(!personaSel.value) return;
+    try{
+      const resp = await fetch(personaSel.value, { cache: 'no-store' });
+      if(!resp.ok){ showBanner('Failed to fetch persona: ' + resp.status + ' ' + resp.statusText + '\n' + personaSel.value); return; }
+      const data = await resp.json();
+      personaName.textContent = displayNameFromFilename(personaSel.value.split('/').pop());
+      render(data);
+    }catch(e){
+      showBanner('Persona fetch error: ' + (e && e.message ? e.message : e) + '\n' + personaSel.value);
+      console.error('Persona fetch error', e);
+    }
+  };
+
+  document.getElementById('printBtn').addEventListener('click', ()=> window.print());
+  document.getElementById('reloadBtn').addEventListener('click', ()=>{ location.href = location.pathname + '?debug=' + (getParam('debug')||'0'); });
+  document.getElementById('viewManifestBtn').addEventListener('click', ()=>{
+    const panel = document.getElementById('debugPanel');
+    panel.style.display = (panel.style.display==='none'?'block':'none');
+    if(panel.style.display==='block'){
+      try{
+        panel.textContent = 'Source: ' + (manifest.source||'unknown') + '\n' + JSON.stringify(manifest, null, 2);
+      }catch(e){
+        panel.textContent = 'Could not stringify manifest: ' + (e && e.message ? e.message : e);
+      }
+    }
+  });
+  document.getElementById('testPersonaBtn').addEventListener('click', async ()=>{
+    const panel = document.getElementById('debugPanel');
+    panel.style.display = 'block';
+    const url = personaSel.value;
+    if(!url){ panel.textContent='Select a user first.'; return; }
+    try{
+      panel.textContent = 'Fetching: ' + url + ' ...';
+      const resp = await fetch(url, { cache: 'no-store' });
+      const text = await resp.text();
+      panel.textContent = 'Status: ' + resp.status + ' ' + resp.statusText + '\nURL: ' + url + '\n--- SNIPPET ---\n' + text.slice(0,400);
+    }catch(e){
+      panel.textContent = 'Error fetching ' + url + ': ' + (e && e.message ? e.message : e);
+    }
+  });
+}
+
+function clearGrid(){
+  document.getElementById('scenarioContent').textContent = '';
+  const expList = document.getElementById('expectationsList'); expList.innerHTML='';
+  document.querySelectorAll('.cell').forEach(c=>{
+    if(!c.classList.contains('feelings-merged')) c.innerHTML='';
+  });
+  drawFeelings([5,5,5,5], ['', '', '', '']); // neutral
+}
+
+// ----- Rendering -----
+function render(data){
+  document.getElementById('scenarioContent').textContent = (typeof data.scenario === 'string') ? data.scenario : (data?.scenario?.description || '');
+  const expList = document.getElementById('expectationsList');
+  expList.innerHTML='';
+  const exps = Array.isArray(data.expectations) ? data.expectations : (data.expectations ? [data.expectations] : []);
+  exps.forEach(s=>{ const li=document.createElement('li'); li.textContent=s; expList.appendChild(li); });
+
+  const rows=['actions','pains','opportunities'];
+  document.querySelectorAll('.cell').forEach(c=>{
+    if(!c.classList.contains('feelings-merged')) c.innerHTML='';
+  });
+
+  // Accept both array (preferred) or object phases {awareness,consideration,enrollment,engagement}
+  let phases = Array.isArray(data.phases) ? data.phases : null;
+  if(!phases && data.phases && typeof data.phases==='object'){
+    const order = ['awareness','consideration','enrollment','engagement'];
+    phases = order.map(k => data.phases[k]).filter(Boolean);
   }
+
+  (phases || []).forEach((p,idx)=>{
+    rows.forEach(row=>{
+      const cell=document.querySelector(`.cell[data-phase="${idx}"][data-row="${row}"]`);
+      if(!cell) return;
+      const list=p[row]||[];
+      const items = Array.isArray(list) ? list : (list ? [list] : []);
+      if(items.length){
+        const ul=document.createElement('ul'); ul.className='bullets';
+        items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); });
+        cell.appendChild(ul);
+      }else{ cell.textContent='—'; }
+    });
+  });
+
+  const scores=(phases||[]).map(p=>{
+    const raw = (p?.feelings?.score ?? p?.feelings?.feeling_score ?? 5);
+    return Math.max(1, Math.min(10, Number(raw)));
+  }).slice(0,4);
+  const quotes=(phases||[]).map(p=>p?.feelings?.quote || '').slice(0,4);
+  drawFeelings(scores, quotes);
+}
+
+// smoothing
+function catmullRom2bezier(points){
+  if(points.length<2) return '';
+  const p = points.map(pt=>({x:pt.x, y:pt.y}));
+  let d = `M ${p[0].x} ${p[0].y}`;
+  for(let i=0;i<p.length-1;i++){
+    const p0 = p[i-1] || p[i];
+    const p1 = p[i];
+    const p2 = p[i+1];
+    const p3 = p[i+2] || p[i+1];
+    const cp1x = p1.x + (p2.x - p0.x)/6;
+    const cp1y = p1.y + (p2.y - p0.y)/6;
+    const cp2x = p2.x - (p3.x - p1.x)/6;
+    const cp2y = p2.y - (p3.y - p1.y)/6;
+    d += ` C ${cp1x} ${cp1y}, ${cp2x} ${cp2y}, ${p2.x} ${p2.y}`;
+  }
+  return d;
+}
+
+function drawFeelings(scores, quotes){
+  const svg=document.getElementById('feelingsSVG');
+  const path=document.getElementById('feelingsPath');
+  const markers=document.getElementById('markers');
+  const guides=document.getElementById('guides');
+  const yaxis=document.getElementById('yaxis');
+  const qlayer=document.getElementById('quotesLayer');
+  const cols = qlayer.querySelectorAll('.qcol');
+
+  const W=1000, H=220, PADX=68, PADY=20; // left padding for Y-axis
+  const usableW = W - PADX*2;
+  const usableH = H - PADY*2;
+
+  // y-axis with emojis
+  yaxis.innerHTML = '';
+  const axisX = PADX - 28;
+  const axisLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+  axisLine.setAttribute('x1', String(axisX));
+  axisLine.setAttribute('x2', String(axisX));
+  axisLine.setAttribute('y1', String(PADY));
+  axisLine.setAttribute('y2', String(H - PADY));
+  yaxis.appendChild(axisLine);
+
+  const topY = PADY;
+  const midY = PADY + usableH/2;
+  const botY = H - PADY;
+  [['🙂', topY], ['😐', midY], ['🙁', botY]].forEach(([ch, y])=>{
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', String(axisX - 18));
+    t.setAttribute('y', String(y));
+    t.textContent = ch;
+    yaxis.appendChild(t);
+  });
+
+  // horizontal guides
+  guides.innerHTML='';
+  for(let i=1;i<=10;i++){
+    const y = PADY + usableH - ((i-1)/9)*usableH;
+    const g = document.createElementNS('http://www.w3.org/2000/svg','line');
+    g.setAttribute('x1', String(PADX));
+    g.setAttribute('x2', String(W-PADX));
+    g.setAttribute('y1', String(y));
+    g.setAttribute('y2', String(y));
+    g.setAttribute('stroke', '#e5e7eb');
+    g.setAttribute('stroke-width', '1');
+    guides.appendChild(g);
+  }
+
+  const xs=[0,1,2,3].map(i=>PADX + (usableW/3)*i);
+  const ys=scores.map(s=> PADY + usableH - ((s-1)/9)*usableH);
+  const points = xs.map((x,i)=>({x, y:ys[i]}));
+
+  const d = catmullRom2bezier(points);
+  path.setAttribute('d', d);
+  path.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--path').trim() || '#111827');
+
+  markers.innerHTML='';
+  xs.forEach((x,idx)=>{
+    const y=ys[idx];
+    const g = document.createElementNS('http://www.w3.org/2000/svg','g');
+    g.setAttribute('class','marker');
+    const c = document.createElementNS('http://www.w3.org/2000/svg','circle');
+    c.setAttribute('cx', String(x)); c.setAttribute('cy', String(y)); c.setAttribute('r','12');
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', String(x)); t.setAttribute('y', String(y)); t.textContent=String(idx+1);
+    g.appendChild(c); g.appendChild(t);
+    markers.appendChild(g);
+  });
+
+  // quotes in 4 non-overlapping columns
+  cols.forEach(c => c.innerHTML='');
+  const layerRect = svg.getBoundingClientRect();
+  const toPxY = y => (y / H) * layerRect.height;
+  quotes.forEach((quote, idx)=>{
+    if(!quote) return;
+    const box = document.createElement('div');
+    const isAbove = scores[idx] <= 5;
+    box.className = 'quote-box ' + (isAbove ? 'above' : 'below');
+    box.textContent = quote;
+    const col = cols[idx];
+    col.appendChild(box);
+    requestAnimationFrame(()=>{
+      const rect = box.getBoundingClientRect();
+      const py = toPxY(ys[idx]);
+      const layer = col.getBoundingClientRect();
+      const offset = 16;
+      const top = isAbove ? (py - rect.height - offset) : (py + offset);
+      box.style.left = '0px';
+      box.style.top = Math.max(0, Math.min(top - layer.top + qlayer.getBoundingClientRect().top, layer.height - rect.height)) + 'px';
+    });
+  });
+}
+
+document.addEventListener('DOMContentLoaded', ()=>{
+  init().catch(e=>{
+    console.error('Init error', e);
+    showBanner('Could not initialize app. Check console for details.');
+  });
 });
