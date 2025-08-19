@@ -1,12 +1,14 @@
 {
   "persona": "Pivoting Paul",
-  "scenario": {
-    "title": "Operations Manager (Logistics)",
-    "description": "Paul is an operations manager in logistics with two decades of experience. As automation and AI reshape his field, he wants to reskill into business intelligence or analytics. He is a true beginner at coding and worries about keeping up with younger peers."
-  },
-  "expectations": "A welcoming, start-from-zero experience with hands-on practice, clear milestones, reassurance for mid-career learners, and a recognizable credential to support a career transition.",
-  "phases": {
-    "awareness": {
+  "scenario": "Paul is an operations manager in logistics with two decades of experience. As automation and AI reshape his field, he wants to reskill into business intelligence or analytics. He is a true beginner at coding and worries about keeping up with younger peers.",
+  "expectations": [
+    "A welcoming, start-from-zero experience with hands-on practice",
+    "Clear milestones and reassurance for mid-career learners",
+    "A recognizable credential to support a career transition"
+  ],
+  "phases": [
+    {
+      "title": "Phase 1 | Awareness",
       "actions": [
         "Reads trade articles about AI’s impact on logistics.",
         "Searches for beginner data science programs in North Carolina.",
@@ -18,14 +20,15 @@
       ],
       "feelings": {
         "quote": "If I don’t adapt now, I’ll fall behind.",
-        "feeling_score": 4
+        "score": 4
       },
       "opportunities": [
         "Feature mid-career alumni success stories and case studies.",
         "Publish a beginner readiness guide that normalizes ramp-up time."
       ]
     },
-    "consideration": {
+    {
+      "title": "Phase 2 | Consideration",
       "actions": [
         "Compares NC State page with community college and MOOC options.",
         "Checks difficulty level, prerequisites, and weekly time.",
@@ -37,14 +40,15 @@
       ],
       "feelings": {
         "quote": "I’m ready to try, but I don’t want to be left behind.",
-        "feeling_score": 5
+        "score": 5
       },
       "opportunities": [
         "Emphasize beginner-first design and scaffolded assignments.",
         "Clarify support: office hours, mentor access, and pacing checkpoints."
       ]
     },
-    "enrollment": {
+    {
+      "title": "Phase 3 | Enrollment",
       "actions": [
         "Registers online and pays out of pocket.",
         "Downloads course calendar and blocks time."
@@ -55,14 +59,15 @@
       ],
       "feelings": {
         "quote": "This is a leap of faith.",
-        "feeling_score": 4
+        "score": 4
       },
       "opportunities": [
         "Offer installment plans and refund windows.",
         "Provide a step-by-step enrollment guide with screenshots."
       ]
     },
-    "engagement": {
+    {
+      "title": "Phase 4 | Engagement",
       "actions": [
         "Replays recorded lectures to reinforce learning.",
         "Completes applied exercises tied to logistics scenarios.",
@@ -74,12 +79,12 @@
       ],
       "feelings": {
         "quote": "It’s hard, but I’m proving I can do it.",
-        "feeling_score": 6
+        "score": 6
       },
       "opportunities": [
         "Structured milestones with celebratory feedback on completion.",
         "Mentorship pairing and optional fundamentals refreshers."
       ]
     }
-  }
+  ]
 }
