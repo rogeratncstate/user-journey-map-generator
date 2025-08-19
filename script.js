@@ -1,3 +1,4 @@
+
 let manifest = null;
 
 async function loadJSON(path){ const res = await fetch(path); return res.json(); }
@@ -17,7 +18,7 @@ function setOptions(sel, items, placeholder){
 
 function displayNameFromFilename(fname){
   const name = fname.replace(/\.json$/i,'').replace(/_/g,' ');
-  return name.replace(/\w\S*/g, (w)=> w.charAt(0).toUpperCase() + w.slice(1));
+  return name.replace(/\w\S*/g, w => w.charAt(0).toUpperCase() + w.slice(1));
 }
 
 async function init(){
@@ -26,11 +27,10 @@ async function init(){
   const personaSel = document.getElementById('personaSelect');
   const personaName = document.getElementById('personaName');
 
-  // Populate course dropdown with placeholder
   const courseItems = manifest.courses.map(c=>({value:c.folder, label:c.name}));
   setOptions(courseSel, courseItems, '-- Select Course --');
-  personaSel.disabled = true;
   setOptions(personaSel, [], '-- Select User --');
+  personaSel.disabled = true;
   personaName.textContent = '—';
 
   courseSel.onchange = async ()=>{
@@ -41,7 +41,6 @@ async function init(){
     setOptions(personaSel, personas, '-- Select User --');
     personaSel.disabled = personas.length === 0;
     personaName.textContent = '—';
-    // clear content until persona chosen
     clearGrid();
   };
 
@@ -51,6 +50,8 @@ async function init(){
     personaName.textContent = displayNameFromFilename(personaSel.value.split('/').pop());
     render(data);
   };
+
+  document.getElementById('printBtn').addEventListener('click', ()=> window.print());
 }
 
 function clearGrid(){
@@ -59,10 +60,10 @@ function clearGrid(){
   document.querySelectorAll('.cell').forEach(c=>{
     if(!c.classList.contains('feelings-merged')) c.innerHTML='';
   });
-  drawFeelings([5,5,5,5], ['', '', '', '']); // neutral baseline
+  drawFeelings([5,5,5,5], ['', '', '', '']); // neutral
 }
 
-// ---- Rendering ----
+// ----- Rendering -----
 function render(data){
   document.getElementById('scenarioContent').textContent = data.scenario || '';
   const expList = document.getElementById('expectationsList');
@@ -88,10 +89,7 @@ function render(data){
     });
   });
 
-  const scores=(data.phases||[]).map(p=>{
-    const s=Number(p?.feelings?.score ?? 5);
-    return Number.isFinite(s)? Math.min(10,Math.max(1,s)):5;
-  }).slice(0,4);
+  const scores=(data.phases||[]).map(p=>Math.max(1, Math.min(10, Number(p?.feelings?.score ?? 5)))).slice(0,4);
   const quotes=(data.phases||[]).map(p=>p?.feelings?.quote || '').slice(0,4);
   drawFeelings(scores, quotes);
 }
@@ -120,14 +118,36 @@ function drawFeelings(scores, quotes){
   const path=document.getElementById('feelingsPath');
   const markers=document.getElementById('markers');
   const guides=document.getElementById('guides');
+  const yaxis=document.getElementById('yaxis');
   const qlayer=document.getElementById('quotesLayer');
   const cols = qlayer.querySelectorAll('.qcol');
 
-  const W=1000, H=220, PADX=40, PADY=20;
+  const W=1000, H=220, PADX=68, PADY=20; // extra left padding for Y-axis
   const usableW = W - PADX*2;
   const usableH = H - PADY*2;
 
-  // guides
+  // y-axis with emojis
+  yaxis.innerHTML = '';
+  const axisX = PADX - 28;
+  const axisLine = document.createElementNS('http://www.w3.org/2000/svg','line');
+  axisLine.setAttribute('x1', String(axisX));
+  axisLine.setAttribute('x2', String(axisX));
+  axisLine.setAttribute('y1', String(PADY));
+  axisLine.setAttribute('y2', String(H - PADY));
+  yaxis.appendChild(axisLine);
+
+  const topY = PADY;
+  const midY = PADY + usableH/2;
+  const botY = H - PADY;
+  [['🙂', topY], ['😐', midY], ['🙁', botY]].forEach(([ch, y])=>{
+    const t = document.createElementNS('http://www.w3.org/2000/svg','text');
+    t.setAttribute('x', String(axisX - 18));
+    t.setAttribute('y', String(y));
+    t.textContent = ch;
+    yaxis.appendChild(t);
+  });
+
+  // horizontal guides
   guides.innerHTML='';
   for(let i=1;i<=10;i++){
     const y = PADY + usableH - ((i-1)/9)*usableH;
@@ -149,7 +169,6 @@ function drawFeelings(scores, quotes){
   path.setAttribute('d', d);
   path.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--path').trim() || '#111827');
 
-  // markers
   markers.innerHTML='';
   xs.forEach((x,idx)=>{
     const y=ys[idx];
@@ -187,11 +206,6 @@ function drawFeelings(scores, quotes){
   });
 }
 
-document.getElementById('printBtn').addEventListener('click', ()=> window.print());
-
-// init();  // moved to DOMContentLoaded in v11
-
-// v11 helpers: show error banner
 function showError(msg){
   let bar = document.getElementById('errorBar');
   if(!bar){
@@ -207,11 +221,11 @@ function showError(msg){
 document.addEventListener('DOMContentLoaded', async ()=>{
   try{
     if(location.protocol === 'file:'){
-      showError('To enable the course dropdown, please serve this folder over HTTP (e.g., run “python3 -m http.server” in the project root) so the browser can fetch data/manifest.json.');
+      showError('For best results, serve this folder over HTTP (or deploy to Vercel).');
     }
     await init();
   }catch(e){
     console.error('Init failed:', e);
-    showError('Could not load courses. Make sure data/manifest.json exists and you are serving the folder over HTTP.');
+    showError('Could not load courses. Ensure data/manifest.json exists.');
   }
 });

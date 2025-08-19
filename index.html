@@ -14,12 +14,8 @@
   <main id="app">
     <section class="topbar">
       <div class="selects">
-        <label>
-          <select id="courseSelect" aria-label="Select course"></select>
-        </label>
-        <label>
-          <select id="personaSelect" aria-label="Select persona" disabled></select>
-        </label>
+        <select id="courseSelect" aria-label="Select course"></select>
+        <select id="personaSelect" aria-label="Select persona" disabled></select>
       </div>
       <div class="actions">
         <button id="printBtn" type="button">Print / Save as PDF</button>
@@ -44,37 +40,34 @@
     </section>
 
     <section class="grid">
-      <!-- header row -->
       <div class="spacer"></div>
       <div class="tab ph1">Phase 1 | Awareness</div>
       <div class="tab ph2">Phase 2 | Consideration</div>
       <div class="tab ph3">Phase 3 | Enrollment</div>
       <div class="tab ph4">Phase 4 | Engagement</div>
 
-      <!-- Actions row -->
       <div class="row-label">Actions</div>
       <div class="cell tint ph1" data-phase="0" data-row="actions"></div>
       <div class="cell tint ph2" data-phase="1" data-row="actions"></div>
       <div class="cell tint ph3" data-phase="2" data-row="actions"></div>
       <div class="cell tint ph4" data-phase="3" data-row="actions"></div>
 
-      <!-- Pains row -->
       <div class="row-label">Pains</div>
       <div class="cell tint ph1" data-phase="0" data-row="pains"></div>
       <div class="cell tint ph2" data-phase="1" data-row="pains"></div>
       <div class="cell tint ph3" data-phase="2" data-row="pains"></div>
       <div class="cell tint ph4" data-phase="3" data-row="pains"></div>
 
-      <!-- Feelings row (merged) -->
       <div class="row-label">Feelings</div>
       <div class="cell feelings-merged" id="feelingsCell">
         <div class="feelings-track-layer">
-          <svg id="feelingsSVG" viewBox="0 0 1000 220" preserveAspectRatio="none" role="img">
+          <svg id="feelingsSVG" viewBox="0 0 1000 220" preserveAspectRatio="none" role="img" aria-label="Feelings path">
             <defs>
               <pattern id="dotline" width="6" height="6" patternUnits="userSpaceOnUse">
                 <rect width="2" height="2" fill="#cbd5e1"></rect>
               </pattern>
             </defs>
+            <g id="yaxis"></g>
             <g id="guides"></g>
             <line id="baseline" x1="40" x2="960" y1="150" y2="150" stroke="url(#dotline)" stroke-width="2"></line>
             <path id="feelingsPath" fill="none" stroke-width="3"></path>
@@ -89,7 +82,6 @@
         </div>
       </div>
 
-      <!-- Opportunities row -->
       <div class="row-label">Opportunities</div>
       <div class="cell tint ph1" data-phase="0" data-row="opportunities"></div>
       <div class="cell tint ph2" data-phase="1" data-row="opportunities"></div>

@@ -10,12 +10,17 @@ function titleFromFolder(name){
 }
 
 async function main(){
-  const entries = await fs.readdir(DATA_DIR, { withFileTypes: true }).catch(()=>[]);
+  await fs.mkdir(DATA_DIR, { recursive: true });
+  let entries = [];
+  try { entries = await fs.readdir(DATA_DIR, { withFileTypes: true }); } catch {}
   const courses = [];
-  for (const dirent of entries){
-    if(!dirent.isDirectory()) continue;
-    const folder = dirent.name;
-    const files = (await fs.readdir(join(DATA_DIR, folder))).filter(f => f.endsWith('.json') && f !== 'manifest.json').sort();
+  for(const d of entries){
+    if(!d.isDirectory()) continue;
+    const folder = d.name;
+    let files = [];
+    try {
+      files = (await fs.readdir(join(DATA_DIR, folder))).filter(f=>f.endsWith('.json') && f!=='manifest.json').sort();
+    } catch {}
     if(!files.length) continue;
     courses.push({ name: titleFromFolder(folder), folder, files });
   }
@@ -24,4 +29,4 @@ async function main(){
   console.log(`[OK] Wrote manifest with ${courses.length} course(s) -> ${MANIFEST}`);
 }
 
-main().catch(err => { console.error(err); process.exit(1); });
+main().catch(e=>{ console.error(e); process.exit(1); });

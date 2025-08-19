@@ -1,3 +1,4 @@
+
 :root{
   --ink:#0f172a; --muted:#6b7280; --line:#e5e7eb; --card:#ffffff; --bg:#f8fafc;
   --radius:16px; --shadow:0 1px 3px rgba(0,0,0,.06);
@@ -10,14 +11,13 @@
 
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1.45 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial}
-h1,h2{margin:0 0 .5rem}
 
 .site-header{display:flex;justify-content:center;align-items:center;padding:14px 24px}
 .site-header .title{font-weight:750;letter-spacing:.2px}
 
 #app{max-width:1120px;margin:0 auto;padding:0 24px 24px}
 
-.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px;position:relative;z-index:100}
 .topbar .selects{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .topbar select{padding:6px 8px;border:1px solid var(--line);border-radius:8px;background:#fff;min-width:220px}
 .topbar button{padding:8px 12px;border-radius:8px;border:1px solid var(--line);background:#fff;cursor:pointer}
@@ -42,7 +42,6 @@ h1,h2{margin:0 0 .5rem}
 .cell{background:#fff;border:1px solid var(--line);border-radius:12px;padding:12px;box-shadow:var(--shadow)}
 
 .cell.tint.ph1{background:var(--ph1t)} .cell.tint.ph2{background:var(--ph2t)} .cell.tint.ph3{background:var(--ph3t)} .cell.tint.ph4{background:var(--ph4t)}
-.cell blockquote{margin:0;padding:.4rem .5rem;border-left:3px solid #cbd5e1;color:#374151;background:rgba(255,255,255,.6);border-radius:8px}
 
 .feelings-merged{grid-column:2 / 6; position:relative; padding:0; min-height:200px}
 .feelings-track-layer{position:relative; height:200px}
@@ -51,6 +50,8 @@ h1,h2{margin:0 0 .5rem}
 .marker circle{fill:var(--path)}
 .marker text{font-weight:800;font-size:12px;dominant-baseline:middle;text-anchor:middle;fill:#fff}
 
+/* quotes should never block clicks */
+.quotes-layer, .quotes-layer * { pointer-events: none; }
 .quotes-layer.grid4{position:absolute; inset:0; display:grid; grid-template-columns:repeat(4,1fr); gap:12px; padding:0 8px}
 .qcol{position:relative}
 .quote-box{
@@ -67,15 +68,19 @@ h1,h2{margin:0 0 .5rem}
   border-left:1px solid var(--line); border-top:1px solid var(--line); transform:rotate(45deg);
 }
 
+/* Y-axis styling */
+#yaxis line { stroke: #cbd5e1; stroke-width: 1.5; }
+#yaxis text { font-size: 18px; dominant-baseline: middle; text-anchor: middle; }
+
 @media (max-width: 900px){
   .hero{grid-template-columns:1fr}
   .grid{grid-template-columns:120px repeat(4,1fr)}
 }
+
 @media print{
   .topbar{display:none}
+  /* Soft approach: try to keep feelings row together */
+  .feelings-merged,
+  .feelings-track-layer,
+  #feelingsSVG { break-inside: avoid; page-break-inside: avoid; }
 }
-
-/* v11: keep topbar above any SVG overlays just in case */
-.topbar{ position: relative; z-index: 100; }
-/* v11: feelings quotes layer should never capture clicks */
-.quotes-layer, .quotes-layer * { pointer-events: none; }

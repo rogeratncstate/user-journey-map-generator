@@ -1,11 +1,11 @@
 {
   "name": "journey-map",
-  "version": "12.0.0",
+  "version": "14.0.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "node scripts/generateManifest.mjs",
-    "dev": "node scripts/generateManifest.mjs && python3 -m http.server 5173",
-    "vercel-build": "node scripts/generateManifest.mjs"
+    "vercel-build": "node scripts/generateManifest.mjs",
+    "dev": "node scripts/generateManifest.mjs && python3 -m http.server 5173"
   }
 }
