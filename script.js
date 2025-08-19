@@ -1,8 +1,5 @@
 
-// Utils
-function getParam(name){ try{ return new URLSearchParams(location.search).get(name); }catch{ return null; } }
-function addBadge(){/* no-op: debug removed */}
-function updateBadge(){/* no-op */}
+// Minimal helpers
 function showBanner(msg){
   let bar = document.getElementById('errorBar');
   if(!bar){
@@ -15,6 +12,7 @@ function showBanner(msg){
   bar.textContent = msg;
 }
 
+// Manifest loader (GitHub-first, fallback to local, then embedded)
 async function loadManifest(){
   const cfg = window.RUNTIME_MANIFEST_SOURCE;
   if (cfg && cfg.type === 'github') {
@@ -40,16 +38,11 @@ async function loadManifest(){
           .sort((a,b)=> a.name.localeCompare(b.name));
         if (jsons.length) courses.push({ name: toTitle(folder), folder, files: jsons });
       }
-      if (courses.length){
-        return { source: 'github', courses };
-      } else {
-        showBanner('No courses found in GitHub /data. Falling back to local data.');
-      }
+      if (courses.length) return { source: 'github', courses };
     } catch (e) {
       console.warn('GitHub manifest fetch failed; using local fallback', e);
     }
   }
-  // Local fallback (tagged)
   try {
     const res = await fetch('data/manifest.json', { cache: 'no-store' });
     if (res.ok) {
@@ -59,7 +52,6 @@ async function loadManifest(){
   } catch(e) {
     console.warn('Local manifest missing; using embedded sample', e);
   }
-  // Embedded sample
   return {
     source: 'embedded',
     courses: [{
@@ -92,12 +84,14 @@ async function init(){
   const personaSel = document.getElementById('personaSelect');
   const personaName = document.getElementById('personaName');
 
+  // Populate courses
   const courseItems = (manifest.courses||[]).map(c=>({value:c.folder, label:c.name}));
   setOptions(courseSel, courseItems, '-- Select Course --');
   setOptions(personaSel, [], '-- Select User --');
   personaSel.disabled = true;
   personaName.textContent = '—';
 
+  // Handle course selection
   courseSel.onchange = async ()=>{
     const folder = courseSel.value;
     const course = (manifest.courses||[]).find(c=>c.folder===folder);
@@ -114,42 +108,22 @@ async function init(){
     clearGrid();
   };
 
+  // Handle persona selection
   personaSel.onchange = async ()=>{
     if(!personaSel.value) return;
     try{
       const resp = await fetch(personaSel.value, { cache: 'no-store' });
-      if(!resp.ok){ showBanner('Failed to fetch persona: ' + resp.status + ' ' + resp.statusText + '\n' + personaSel.value); return; }
+      if(!resp.ok){ showBanner('Failed to fetch persona: ' + resp.status + ' ' + resp.statusText + '\\n' + personaSel.value); return; }
       const data = await resp.json();
       personaName.textContent = displayNameFromFilename(personaSel.value.split('/').pop());
       render(data);
     }catch(e){
-      showBanner('Persona fetch error: ' + (e && e.message ? e.message : e) + '\n' + personaSel.value);
+      showBanner('Persona fetch error: ' + (e && e.message ? e.message : e) + '\\n' + personaSel.value);
       console.error('Persona fetch error', e);
     }
   };
 
   document.getElementById('printBtn').addEventListener('click', ()=> window.print());
-    panel.style.display = (panel.style.display==='none'?'block':'none');
-    if(panel.style.display==='block'){
-      try{
-        panel.textContent = 'Source: ' + (manifest.source||'unknown') + '\n' + JSON.stringify(manifest, null, 2);
-      }catch(e){
-        panel.textContent = 'Could not stringify manifest: ' + (e && e.message ? e.message : e);
-      }
-    }
-  });
-    panel.style.display = 'block';
-    const url = personaSel.value;
-    if(!url){ panel.textContent='Select a user first.'; return; }
-    try{
-      panel.textContent = 'Fetching: ' + url + ' ...';
-      const resp = await fetch(url, { cache: 'no-store' });
-      const text = await resp.text();
-      panel.textContent = 'Status: ' + resp.status + ' ' + resp.statusText + '\nURL: ' + url + '\n--- SNIPPET ---\n' + text.slice(0,400);
-    }catch(e){
-      panel.textContent = 'Error fetching ' + url + ': ' + (e && e.message ? e.message : e);
-    }
-  });
 }
 
 function clearGrid(){
@@ -174,23 +148,34 @@ function render(data){
     if(!c.classList.contains('feelings-merged')) c.innerHTML='';
   });
 
-  // Accept both array (preferred) or object phases {awareness,consideration,enrollment,engagement}
+  // Accept both array or object phases
   let phases = Array.isArray(data.phases) ? data.phases : null;
   if(!phases && data.phases && typeof data.phases==='object'){
     const order = ['awareness','consideration','enrollment','engagement'];
     phases = order.map(k => data.phases[k]).filter(Boolean);
   }
 
+  // Global continuous numbering for actions
+  let actionCounter = 1;
+
   (phases || []).forEach((p,idx)=>{
-    rows.forEach(row=>{
+    rows.forEach((row)=>{
       const cell=document.querySelector(`.cell[data-phase="${idx}"][data-row="${row}"]`);
       if(!cell) return;
       const list=p[row]||[];
       const items = Array.isArray(list) ? list : (list ? [list] : []);
       if(items.length){
-        const ul=document.createElement('ul'); ul.className='bullets';
-        items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); });
-        cell.appendChild(ul);
+        if(row === 'actions'){
+          const ol=document.createElement('ol');
+          ol.start = actionCounter;
+          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ol.appendChild(li); });
+          cell.appendChild(ol);
+          actionCounter += items.length;
+        } else {
+          const ul=document.createElement('ul'); ul.className='bullets';
+          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); });
+          cell.appendChild(ul);
+        }
       }else{ cell.textContent='—'; }
     });
   });
@@ -231,7 +216,7 @@ function drawFeelings(scores, quotes){
   const qlayer=document.getElementById('quotesLayer');
   const cols = qlayer.querySelectorAll('.qcol');
 
-  const W=1000, H=220, PADX=68, PADY=20; // left padding for Y-axis
+  const W=1000, H=220, PADX=68, PADY=20;
   const usableW = W - PADX*2;
   const usableH = H - PADY*2;
 
