@@ -51,7 +51,7 @@ function applyAvatarForPersona(data, personaUrl){
   }
 }
 
-// Manifest loader
+// Manifest loader (GitHub-first)
 async function loadManifest(){
   const cfg = window.RUNTIME_MANIFEST_SOURCE;
   if (cfg && cfg.type === 'github') {
@@ -123,12 +123,14 @@ async function init(){
   const personaSel = document.getElementById('personaSelect');
   const personaName = document.getElementById('personaName');
 
+  // Populate courses
   const courseItems = (manifest.courses||[]).map(c=>({value:c.folder, label:c.name}));
   setOptions(courseSel, courseItems, '-- Select Course --');
   setOptions(personaSel, [], '-- Select User --');
   personaSel.disabled = true;
   personaName.textContent = '—';
 
+  // Handle course selection
   courseSel.onchange = async ()=>{
     const folder = courseSel.value;
     const course = (manifest.courses||[]).find(c=>c.folder===folder);
@@ -143,20 +145,21 @@ async function init(){
     personaSel.disabled = personas.length === 0;
     personaName.textContent = '—';
     clearGrid();
-    setAvatarSrc([]);
+    setAvatarSrc([]); // clear avatar on course change
   };
 
+  // Handle persona selection
   personaSel.onchange = async ()=>{
     if(!personaSel.value) return;
     try{
       const resp = await fetch(personaSel.value, { cache: 'no-store' });
-      if(!resp.ok){ showBanner('Failed to fetch persona: ' + resp.status + ' ' + resp.statusText + '\\n' + personaSel.value); return; }
+      if(!resp.ok){ showBanner('Failed to fetch persona: ' + resp.status + ' ' + resp.statusText + '\n' + personaSel.value); return; }
       const data = await resp.json();
       applyAvatarForPersona(data, personaSel.value);
       personaName.textContent = displayNameFromFilename(personaSel.value.split('/').pop());
       render(data);
     }catch(e){
-      showBanner('Persona fetch error: ' + (e && e.message ? e.message : e) + '\\n' + personaSel.value);
+      showBanner('Persona fetch error: ' + (e && e.message ? e.message : e) + '\n' + personaSel.value);
       console.error('Persona fetch error', e);
     }
   };
@@ -173,6 +176,7 @@ function clearGrid(){
   drawFeelings([5,5,5,5], ['', '', '', '']); // neutral
 }
 
+// ----- Rendering -----
 function render(data){
   document.getElementById('scenarioContent').textContent = (typeof data.scenario === 'string') ? data.scenario : (data?.scenario?.description || '');
   const expList = document.getElementById('expectationsList');
@@ -185,13 +189,16 @@ function render(data){
     if(!c.classList.contains('feelings-merged')) c.innerHTML='';
   });
 
+  // Accept both array (preferred) or object phases {awareness,consideration,enrollment,engagement}
   let phases = Array.isArray(data.phases) ? data.phases : null;
   if(!phases && data.phases && typeof data.phases==='object'){
     const order = ['awareness','consideration','enrollment','engagement'];
     phases = order.map(k => data.phases[k]).filter(Boolean);
   }
 
+  // Global continuous numbering for actions
   let actionCounter = 1;
+
   (phases || []).forEach((p,idx)=>{
     rows.forEach((row)=>{
       const cell=document.querySelector(`.cell[data-phase="${idx}"][data-row="${row}"]`);
@@ -207,7 +214,7 @@ function render(data){
           actionCounter += items.length;
         } else {
           const ul=document.createElement('ul'); ul.className='bullets';
-          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(ul); });
+          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); }); // fixed
           cell.appendChild(ul);
         }
       }else{ cell.textContent='—'; }
@@ -222,6 +229,7 @@ function render(data){
   drawFeelings(scores, quotes);
 }
 
+// Curve smoothing
 function catmullRom2bezier(points){
   if(points.length<2) return '';
   const p = points.map(pt=>({x:pt.x, y:pt.y}));
