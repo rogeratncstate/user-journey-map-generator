@@ -37,6 +37,21 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1
 ol { padding-inline-start: 20px; margin-block-start: .5rem; margin-block-end: .5rem; }
 ol li { margin: .25rem 0; }
 
+Add this small CSS tweak:
+
+/* Make the first grid row (tabs) hug its content */
+.grid {
+  /* first (explicit) row = auto height */
+  grid-template-rows: auto;
+  /* remaining (implicit) rows keep your min height */
+  grid-auto-rows: minmax(84px, auto); /* or whatever you already use */
+}
+
+/* Optional: ensure tabs center vertically within their own row */
+.grid .tab {
+  align-self: center;  /* keeps your padding, no extra height */
+}
+
 .grid{display:grid;grid-template-columns:160px repeat(4,1fr);grid-auto-rows:minmax(84px,auto);gap:12px;margin:8px 0 16px}
 .tab{color:#fff;font-weight:800;padding:6px 10px;border-radius:12px 12px 4px 4px;text-align:center}
 .tab.ph1{background:var(--ph1)} .tab.ph2{background:var(--ph2)} .tab.ph3{background:var(--ph3)} .tab.ph4{background:var(--ph4)}
