@@ -1,5 +1,4 @@
 
-// Minimal helpers
 function showBanner(msg){
   let bar = document.getElementById('errorBar');
   if(!bar){
@@ -12,7 +11,47 @@ function showBanner(msg){
   bar.textContent = msg;
 }
 
-// Manifest loader (GitHub-first, fallback to local, then embedded)
+// Avatar helpers
+function setAvatarSrc(urls){
+  const img = document.getElementById('avatarImg');
+  if(!img) return;
+  if(!urls || urls.length === 0){
+    img.style.display = 'none';
+    img.removeAttribute('src');
+    return;
+  }
+  let i = 0;
+  img.onerror = function(){
+    i += 1;
+    if(i < urls.length){
+      img.src = urls[i];
+    }else{
+      img.style.display = 'none';
+    }
+  };
+  img.onload = function(){ img.style.display = 'block'; };
+  img.src = urls[0];
+}
+function applyAvatarForPersona(data, personaUrl){
+  if (data && data.image){
+    setAvatarSrc([data.image]);
+    return;
+  }
+  try{
+    const fname = (personaUrl || '').split('/').pop() || '';
+    const base = fname.replace(/\.json$/i,'');
+    const tryUrls = [
+      `images/${base}.jpg`,
+      `images/${base}.png`,
+      `images/${base}.jpeg`
+    ];
+    setAvatarSrc(tryUrls);
+  }catch{
+    setAvatarSrc([]);
+  }
+}
+
+// Manifest loader
 async function loadManifest(){
   const cfg = window.RUNTIME_MANIFEST_SOURCE;
   if (cfg && cfg.type === 'github') {
@@ -84,14 +123,12 @@ async function init(){
   const personaSel = document.getElementById('personaSelect');
   const personaName = document.getElementById('personaName');
 
-  // Populate courses
   const courseItems = (manifest.courses||[]).map(c=>({value:c.folder, label:c.name}));
   setOptions(courseSel, courseItems, '-- Select Course --');
   setOptions(personaSel, [], '-- Select User --');
   personaSel.disabled = true;
   personaName.textContent = '—';
 
-  // Handle course selection
   courseSel.onchange = async ()=>{
     const folder = courseSel.value;
     const course = (manifest.courses||[]).find(c=>c.folder===folder);
@@ -106,15 +143,16 @@ async function init(){
     personaSel.disabled = personas.length === 0;
     personaName.textContent = '—';
     clearGrid();
+    setAvatarSrc([]);
   };
 
-  // Handle persona selection
   personaSel.onchange = async ()=>{
     if(!personaSel.value) return;
     try{
       const resp = await fetch(personaSel.value, { cache: 'no-store' });
       if(!resp.ok){ showBanner('Failed to fetch persona: ' + resp.status + ' ' + resp.statusText + '\\n' + personaSel.value); return; }
       const data = await resp.json();
+      applyAvatarForPersona(data, personaSel.value);
       personaName.textContent = displayNameFromFilename(personaSel.value.split('/').pop());
       render(data);
     }catch(e){
@@ -135,7 +173,6 @@ function clearGrid(){
   drawFeelings([5,5,5,5], ['', '', '', '']); // neutral
 }
 
-// ----- Rendering -----
 function render(data){
   document.getElementById('scenarioContent').textContent = (typeof data.scenario === 'string') ? data.scenario : (data?.scenario?.description || '');
   const expList = document.getElementById('expectationsList');
@@ -148,16 +185,13 @@ function render(data){
     if(!c.classList.contains('feelings-merged')) c.innerHTML='';
   });
 
-  // Accept both array or object phases
   let phases = Array.isArray(data.phases) ? data.phases : null;
   if(!phases && data.phases && typeof data.phases==='object'){
     const order = ['awareness','consideration','enrollment','engagement'];
     phases = order.map(k => data.phases[k]).filter(Boolean);
   }
 
-  // Global continuous numbering for actions
   let actionCounter = 1;
-
   (phases || []).forEach((p,idx)=>{
     rows.forEach((row)=>{
       const cell=document.querySelector(`.cell[data-phase="${idx}"][data-row="${row}"]`);
@@ -173,7 +207,7 @@ function render(data){
           actionCounter += items.length;
         } else {
           const ul=document.createElement('ul'); ul.className='bullets';
-          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(li); });
+          items.forEach(t=>{ const li=document.createElement('li'); li.textContent=t; ul.appendChild(ul); });
           cell.appendChild(ul);
         }
       }else{ cell.textContent='—'; }
@@ -188,7 +222,6 @@ function render(data){
   drawFeelings(scores, quotes);
 }
 
-// smoothing
 function catmullRom2bezier(points){
   if(points.length<2) return '';
   const p = points.map(pt=>({x:pt.x, y:pt.y}));
@@ -220,7 +253,6 @@ function drawFeelings(scores, quotes){
   const usableW = W - PADX*2;
   const usableH = H - PADY*2;
 
-  // y-axis with emojis
   yaxis.innerHTML = '';
   const axisX = PADX - 28;
   const axisLine = document.createElementNS('http://www.w3.org/2000/svg','line');
@@ -241,7 +273,6 @@ function drawFeelings(scores, quotes){
     yaxis.appendChild(t);
   });
 
-  // horizontal guides
   guides.innerHTML='';
   for(let i=1;i<=10;i++){
     const y = PADY + usableH - ((i-1)/9)*usableH;
@@ -258,7 +289,6 @@ function drawFeelings(scores, quotes){
   const xs=[0,1,2,3].map(i=>PADX + (usableW/3)*i);
   const ys=scores.map(s=> PADY + usableH - ((s-1)/9)*usableH);
   const points = xs.map((x,i)=>({x, y:ys[i]}));
-
   const d = catmullRom2bezier(points);
   path.setAttribute('d', d);
   path.setAttribute('stroke', getComputedStyle(document.documentElement).getPropertyValue('--path').trim() || '#111827');

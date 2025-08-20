@@ -23,7 +23,7 @@ html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font:15.5px/1
 
 .hero{display:grid;grid-template-columns:200px 1fr 1fr;gap:16px;margin-bottom:16px}
 .avatar-wrap{display:flex;flex-direction:column;gap:10px;align-items:center}
-.avatar{width:120px;height:120px;border-radius:999px;background:#e2e8f0}
+.avatar{width:120px;height:120px;border-radius:999px;background:#e2e8f0;object-fit:cover;display:none}
 .persona-name{padding:8px 12px;border-radius:12px;background:#fff;border:1px solid var(--line);font-weight:650;min-height:36px;display:flex;align-items:center}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
