@@ -43,8 +43,7 @@ Add this small CSS tweak:
 .grid {
   /* first (explicit) row = auto height */
   grid-template-rows: auto;
-  /* remaining (implicit) rows keep your min height */
-  grid-auto-rows: minmax(20px, auto); /* or whatever you already use */
+
 }
 
 /* Optional: ensure tabs center vertically within their own row */
@@ -52,7 +51,7 @@ Add this small CSS tweak:
   align-self: center;  /* keeps your padding, no extra height */
 }
 
-.grid{display:grid;grid-template-columns:160px repeat(4,1fr);grid-auto-rows:minmax(84px,auto);gap:12px;margin:32px 0 16px}
+.grid{display:grid;grid-template-columns:160px repeat(4,1fr);grid-auto-rows: minmax(20px, auto);gap:12px;margin:32px 0 16px}
 .tab{color:#fff;font-weight:800;padding:6px 10px;border-radius:4px 4px 4px 4px;text-align:center}
 .tab.ph1{background:var(--ph1)} .tab.ph2{background:var(--ph2)} .tab.ph3{background:var(--ph3)} .tab.ph4{background:var(--ph4)}
 .spacer{background:transparent}
