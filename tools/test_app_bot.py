@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Headless smoke-test bot for the User Journey Map app.
 
-The bot spins up a local HTTP server (unless a ``--base-url`` is supplied), opens the
-app in Playwright, and walks through the primary learner flow:
+The bot ensures the required Playwright browser (and on Linux, system libraries)
+are installed, spins up a local HTTP server unless a ``--base-url`` is supplied,
+opens the app in Playwright, and walks through the primary learner flow:
 
 * wait for the manifest to load courses
 * pick the first course and persona
@@ -16,6 +17,7 @@ from __future__ import annotations
 
 import argparse
 import asyncio
+import os
 import signal
 import subprocess
 import sys
@@ -29,6 +31,35 @@ from playwright.async_api import Playwright, async_playwright
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+TOOLS_DIR = Path(__file__).resolve().parent
+if str(TOOLS_DIR) not in sys.path:
+    sys.path.insert(0, str(TOOLS_DIR))
+
+import bootstrap_playwright  # noqa: E402  (added to sys.path above)
+
+IGNORABLE_CONSOLE_ERRORS = (
+    "net::ERR_CERT_AUTHORITY_INVALID",
+)
+
+
+def bootstrap_dependencies(*, skip: bool, force: bool) -> None:
+    """Ensure Playwright browsers/system dependencies exist before running."""
+
+    if skip or os.environ.get("PLAYWRIGHT_SKIP_BOOTSTRAP") == "1":
+        return
+
+    try:
+        bootstrap_playwright.ensure(
+            browsers=("chromium",),
+            include_deps=True,
+            force=force,
+            quiet=False,
+        )
+    except Exception as exc:  # pragma: no cover - defensive runtime guard
+        raise RuntimeError(
+            "Playwright bootstrap failed. Rerun with --skip-bootstrap or set "
+            "PLAYWRIGHT_SKIP_BOOTSTRAP=1 if dependencies are managed externally."
+        ) from exc
 
 
 def start_http_server(port: int) -> subprocess.Popen[bytes]:
@@ -83,17 +114,29 @@ async def assert_app_flow(playwright: Playwright, url: str, *, headless: bool, s
 
     console_errors: List[str] = []
 
+    def _should_ignore_console(text: str) -> bool:
+        return any(pattern in text for pattern in IGNORABLE_CONSOLE_ERRORS)
+
     def handle_console(msg) -> None:
         if msg.type == "error":
-            console_errors.append(msg.text)
+            text = msg.text
+            if not _should_ignore_console(text):
+                console_errors.append(text)
+
+    def handle_page_error(exc) -> None:
+        text = str(exc)
+        if not _should_ignore_console(text):
+            console_errors.append(text)
 
     page.on("console", handle_console)
-    page.on("pageerror", lambda exc: console_errors.append(str(exc)))
+    page.on("pageerror", handle_page_error)
 
     try:
         await page.goto(url, wait_until="domcontentloaded")
 
-        await page.wait_for_selector("#courseSelect option:not([disabled])", timeout=5000)
+        await page.wait_for_selector(
+            "#courseSelect option:not([disabled])", state="attached", timeout=5000
+        )
         course_value = await page.eval_on_selector(
             "#courseSelect option:not([disabled])", "el => el.value"
         )
@@ -114,11 +157,11 @@ async def assert_app_flow(playwright: Playwright, url: str, *, headless: bool, s
         if not persona_value:
             raise AssertionError("No persona options available after course selection")
 
-        response_future = page.wait_for_response(
-            lambda res: persona_value in res.url, timeout=5000
-        )
-        await page.select_option("#personaSelect", persona_value)
-        await response_future
+        async with page.expect_response(
+            lambda res: persona_value in res.url,
+            timeout=5000,
+        ):
+            await page.select_option("#personaSelect", persona_value)
 
         await page.wait_for_function(
             "() => {"
@@ -187,9 +230,24 @@ async def main() -> None:
         default=0.0,
         help="Delay Playwright actions by the given milliseconds (useful for debugging).",
     )
+    parser.add_argument(
+        "--skip-bootstrap",
+        action="store_true",
+        help=(
+            "Skip installing Playwright browsers/system deps (useful if they are "
+            "managed by your environment)."
+        ),
+    )
+    parser.add_argument(
+        "--force-bootstrap-deps",
+        action="store_true",
+        help="Force reinstalling Playwright system dependencies via --with-deps.",
+    )
     parser.set_defaults(headless=True)
 
     args = parser.parse_args()
+
+    bootstrap_dependencies(skip=args.skip_bootstrap, force=args.force_bootstrap_deps)
 
     if args.base_url:
         base_url = args.base_url

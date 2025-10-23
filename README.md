@@ -114,9 +114,13 @@ populated without console errors.
 
 ```bash
 pip install -r requirements.txt
-playwright install chromium
 python tools/test_app_bot.py
 ```
+
+The bot automatically bootstraps Playwright before it runs. On Linux this includes
+calling ``python -m playwright install --with-deps chromium`` so the required system
+libraries are available. If your environment already manages Playwright, pass
+``--skip-bootstrap`` (or set ``PLAYWRIGHT_SKIP_BOOTSTRAP=1``) to bypass the helper.
 
 To target a deployed build instead of the local static server, pass a full URL:
 
@@ -124,9 +128,16 @@ To target a deployed build instead of the local static server, pass a full URL:
 python tools/test_app_bot.py --base-url https://your-site.example/index.html
 ```
 
-Use `--no-headless` to watch the interactions in a visible browser window.
-If Playwright reports missing system dependencies, install them with
-`playwright install-deps` (Linux) or follow the
-[Playwright troubleshooting guide](https://playwright.dev/python/docs/troubleshooting#installing-browsers).
+Use `--no-headless` to watch the interactions in a visible browser window. If you
+want to pre-install the dependencies in CI or another automated environment, run:
+
+```bash
+python tools/bootstrap_playwright.py
+```
+
+You can then invoke the bot with `--skip-bootstrap` to avoid redundant work. For
+more advanced scenarios (custom browsers, dry runs, different sentinel locations)
+see `python tools/bootstrap_playwright.py --help`. Additional troubleshooting tips
+are available in the [Playwright documentation](https://playwright.dev/python/docs/troubleshooting#installing-browsers).
 
 Contributions and enhancements are welcome!
