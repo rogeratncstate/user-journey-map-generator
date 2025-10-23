@@ -1,0 +1,91 @@
+{
+  "persona": "Innovating Irene",
+  "scenario": "Irene is a mid-career product manager at a major financial firm. She leads cross-functional teams but feels slowed down by developer bottlenecks. She wants to 'speak AI' fluently and use Vibe Coding to lead faster innovation cycles within her organization.",
+  "expectations": [
+    "Actionable, time-efficient learning suited for working professionals",
+    "Hands-on AI prototyping without heavy coding prerequisites",
+    "Tools to communicate AI-driven insights to non-technical stakeholders"
+  ],
+  "phases": [
+    {
+      "title": "Phase 1 | Awareness",
+      "actions": [
+        "Reads about AI-driven product management trends on LinkedIn.",
+        "Finds NC State’s Entrepreneurial AI course while exploring leadership upskilling options.",
+        "Discusses internal innovation goals with senior leadership."
+      ],
+      "pains": [
+        "Dependency on developer teams to test ideas.",
+        "Unclear path to adopting AI tools within corporate constraints."
+      ],
+      "feelings": {
+        "quote": "I’m ready to lead innovation, not wait for it.",
+        "score": 7
+      },
+      "opportunities": [
+        "Showcase managers who accelerated product timelines using AI.",
+        "Offer a short quiz to match course content to corporate innovation goals."
+      ]
+    },
+    {
+      "title": "Phase 2 | Consideration",
+      "actions": [
+        "Compares NC State’s program to similar executive education offerings.",
+        "Downloads a sample syllabus to gauge workload.",
+        "Attends a live info session hosted by the course instructor."
+      ],
+      "pains": [
+        "Skeptical about measurable ROI.",
+        "Unsure how technical the course content will be."
+      ],
+      "feelings": {
+        "quote": "If this bridges business and tech, I’m all in.",
+        "score": 6
+      },
+      "opportunities": [
+        "Highlight portfolio-ready deliverables and AI workflow documentation.",
+        "Provide a pre-course diagnostic to personalize her learning plan."
+      ]
+    },
+    {
+      "title": "Phase 3 | Enrollment",
+      "actions": [
+        "Registers through NC State’s continuing ed portal.",
+        "Schedules weekly time blocks for 90-minute sprints.",
+        "Downloads tool setup guides for VS Code and ChatGPT."
+      ],
+      "pains": [
+        "Worries about balancing course work with job demands.",
+        "Concern about the technical setup process."
+      ],
+      "feelings": {
+        "quote": "This is a bold move—but I’m committed.",
+        "score": 6
+      },
+      "opportunities": [
+        "Provide onboarding videos for quick tech setup.",
+        "Send motivational progress updates via email."
+      ]
+    },
+    {
+      "title": "Phase 4 | Engagement",
+      "actions": [
+        "Applies AI to prototype a reporting dashboard for internal teams.",
+        "Documents her workflow as a Pattern Card.",
+        "Presents her demo to upper management."
+      ],
+      "pains": [
+        "Occasional confusion about AI prompts and integrations.",
+        "Time pressure near final deliverable."
+      ],
+      "feelings": {
+        "quote": "I finally understand how to turn strategy into execution.",
+        "score": 8
+      },
+      "opportunities": [
+        "Provide templates for efficiency metrics tracking.",
+        "Create a spotlight series featuring executive learners’ outcomes."
+      ]
+    }
+  ]
+}

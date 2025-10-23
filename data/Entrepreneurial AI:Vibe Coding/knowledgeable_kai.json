@@ -1,0 +1,91 @@
+{
+  "persona": "Knowledgeable Kai",
+  "scenario": "Kai is a 35-year-old instructional designer at NC State who wants to integrate AI tools into teaching and learning environments. He aims to use Vibe Coding to develop interactive educational resources.",
+  "expectations": [
+    "Education-centered examples of AI tool integration",
+    "Project templates adaptable to higher ed environments",
+    "Portfolio artifacts that demonstrate innovation in learning design"
+  ],
+  "phases": [
+    {
+      "title": "Phase 1 | Awareness",
+      "actions": [
+        "Learns about Vibe Coding through NC State’s faculty innovation newsletter.",
+        "Attends a digital learning conference discussing AI in education.",
+        "Talks with peers about building interactive OER resources."
+      ],
+      "pains": [
+        "LMS tools limit creative design possibilities.",
+        "Lack of time or tech staff to experiment with custom solutions."
+      ],
+      "feelings": {
+        "quote": "I need to build—not just imagine—better learning tools.",
+        "score": 8
+      },
+      "opportunities": [
+        "Feature internal NC State case studies from faculty using Vibe Coding.",
+        "Offer CEUs or credential badges recognized by professional networks."
+      ]
+    },
+    {
+      "title": "Phase 2 | Consideration",
+      "actions": [
+        "Reviews the 6-week syllabus and focuses on accessibility and value-proof modules.",
+        "Confirms project alignment with his department’s digital learning goals.",
+        "Talks with the instructor about integrating course deliverables into ongoing initiatives."
+      ],
+      "pains": [
+        "Uncertain if AI tools meet university accessibility standards.",
+        "Needs to show ROI to justify internal time investment."
+      ],
+      "feelings": {
+        "quote": "This could finally help our team prototype future learning systems.",
+        "score": 7
+      },
+      "opportunities": [
+        "Provide sample educational prototypes from previous cohorts.",
+        "Emphasize the course’s open-standards approach for institutional use."
+      ]
+    },
+    {
+      "title": "Phase 3 | Enrollment",
+      "actions": [
+        "Registers via NC State’s professional development portal.",
+        "Selects a project focused on interactive digital literacy modules.",
+        "Collaborates with peers in library and academic tech units."
+      ],
+      "pains": [
+        "Time management challenges during academic term.",
+        "Anxiety about presenting technical work to colleagues."
+      ],
+      "feelings": {
+        "quote": "It’s refreshing to learn through experimentation.",
+        "score": 8
+      },
+      "opportunities": [
+        "Offer part-time pacing or flexible submission options.",
+        "Provide coaching sessions focused on accessibility compliance."
+      ]
+    },
+    {
+      "title": "Phase 4 | Engagement",
+      "actions": [
+        "Develops an AI-enhanced visualization tool for library instruction.",
+        "Completes the reliability and accessibility checklists.",
+        "Publishes a project page in NC State’s OER repository."
+      ],
+      "pains": [
+        "Integration issues with institutional data systems.",
+        "Limited bandwidth for continued maintenance after course end."
+      ],
+      "feelings": {
+        "quote": "I’ve turned AI theory into practice—and into a reusable asset.",
+        "score": 9
+      },
+      "opportunities": [
+        "Invite him to present at an NC State faculty AI showcase.",
+        "Provide follow-up support for scaling projects across departments."
+      ]
+    }
+  ]
+}

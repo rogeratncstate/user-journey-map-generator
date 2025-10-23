@@ -1,0 +1,91 @@
+{
+  "persona": "Start-Up Sammy",
+  "scenario": "Sammy is a 27-year-old early-career entrepreneur based in Durham. He recently left his marketing role to pursue a product idea and needs AI-assisted prototyping to test MVPs quickly without hiring developers.",
+  "expectations": [
+    "Affordable, high-speed learning with real product outcomes",
+    "Supportive community of builders and mentors",
+    "Clear path from idea to launch-ready prototype"
+  ],
+  "phases": [
+    {
+      "title": "Phase 1 | Awareness",
+      "actions": [
+        "Sees a LinkedIn post showcasing a student’s Vibe Coding project.",
+        "Reads about the NC State course on Product Hunt.",
+        "Joins an entrepreneurship Slack where peers mention the program."
+      ],
+      "pains": [
+        "Limited funding to pay developers.",
+        "Struggles to keep momentum when projects stall at idea stage."
+      ],
+      "feelings": {
+        "quote": "If I can build it myself, I can finally launch faster.",
+        "score": 9
+      },
+      "opportunities": [
+        "Use startup-focused marketing emphasizing 'prototype-to-pitch' outcomes.",
+        "Offer a pre-course mini challenge: build your first demo in one hour."
+      ]
+    },
+    {
+      "title": "Phase 2 | Consideration",
+      "actions": [
+        "Compares the course to private accelerators and bootcamps.",
+        "Downloads the syllabus highlighting 90-minute sprint builds.",
+        "Emails NC State about IP rights for student projects."
+      ],
+      "pains": [
+        "Worried about university bureaucracy slowing him down.",
+        "Unsure if AI tools can produce production-quality demos."
+      ],
+      "feelings": {
+        "quote": "I need to know this course runs like a startup, not a classroom.",
+        "score": 7
+      },
+      "opportunities": [
+        "Highlight fast iteration cycles and real-world product launches.",
+        "Showcase alumni who used course prototypes to secure funding."
+      ]
+    },
+    {
+      "title": "Phase 3 | Enrollment",
+      "actions": [
+        "Registers online and sets up project workspace.",
+        "Joins the course’s startup community group.",
+        "Selects an idea for validation in Week 1."
+      ],
+      "pains": [
+        "Initial confusion during AI tool setup.",
+        "Unclear expectations around project complexity."
+      ],
+      "feelings": {
+        "quote": "Let’s see if I can pull this off solo.",
+        "score": 8
+      },
+      "opportunities": [
+        "Offer quickstart templates for web app projects.",
+        "Provide peer feedback loops to simulate incubator dynamics."
+      ]
+    },
+    {
+      "title": "Phase 4 | Engagement",
+      "actions": [
+        "Builds, tests, and refines an MVP using AI-assisted workflows.",
+        "Creates a product page with demo video and metrics.",
+        "Shares link in his pitch deck to attract seed interest."
+      ],
+      "pains": [
+        "Occasional AI hallucinations causing coding issues.",
+        "Stress before final showcase."
+      ],
+      "feelings": {
+        "quote": "This course gave me the leverage to compete as a solo founder.",
+        "score": 9
+      },
+      "opportunities": [
+        "Invite him to NC State’s startup showcase.",
+        "Offer alumni mentor pairing for post-course growth."
+      ]
+    }
+  ]
+}
