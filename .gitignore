@@ -1,0 +1,9 @@
+# Python artifacts
+__pycache__/
+*.pyc
+
+# Local environment files
+.env
+
+# Generated persona JSON stored locally for review
+/generated/
